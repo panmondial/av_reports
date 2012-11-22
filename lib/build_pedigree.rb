@@ -19,7 +19,7 @@ FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 	  
 	  @pedigree = @my_pedigree
       @full_pedigree = FamilyTreeV2::Pedigree.new
-	  @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+	  @persons = @com.familytree_v2.person @pedigree.person_ids#, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
 
 	  @persons.each do |person|
 	    @full_pedigree << person
