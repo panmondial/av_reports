@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+      <%= stylesheet_link_tag    "application", :media => "all" %>
+      <%= javascript_include_tag "application" %>
+      <%= csrf_meta_tags %>
+      <%= render 'layouts/shim' %>
+  </head>
+  <body>
+    <%= render 'layouts/header' %>
+		
+    
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <h4><%= link_to "Reports Home", reports_path %></h4> </br>
+			<ul class="nav nav-list">
+              <li class="nav-header">Ancestor Reports</li>
+              <li><%= link_to "End-of-Line Ancestors", :controller => :reports, :action => :end_of_line %></li>
+			  <li><%= link_to "Direct Line Ancestors", :controller => :reports, :action => :direct_line_all %></li>
+              <li><%= link_to "Direct Line Missing Birth Date", :controller => :reports, :action => :missing_birth_date %></li>
+			  <li><%= link_to "Direct Line Missing Birth Place", :controller => :reports, :action => :missing_birth_place %></li>
+			  <li><%= link_to "Direct Line Incomplete Birth Date", :controller => :reports, :action => :incomplete_birth_date %></li>
+			  <li>Direct Line Incomplete Birth Place</li>
+			  <li><%= link_to "Direct Line Missing Death Date", :controller => :reports, :action => :missing_death_date %></li>
+			  <li><%= link_to "Direct Line Missing Death Place", :controller => :reports, :action => :missing_death_place %></li>
+			  <li><%= link_to "Direct Line Incomplete Death Date", :controller => :reports, :action => :incomplete_death_date %></li>
+			  <li>Direct Line Incomplete Death Place</li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+		  <% flash.each do |key, value| %>
+				<%= content_tag(:div, value, class: "alert alert-#{key}") %>
+		  <% end %>
+          <div class="row-fluid">
+            <%= yield %>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+    <%= render 'layouts/footer' %>
+    <%= debug(params) if Rails.env.development? %>
+
+    </div><!--/.fluid-container-->
+	
+  </body>
+</html>

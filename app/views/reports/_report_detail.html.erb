@@ -1,0 +1,53 @@
+<h2><%= @report_title %></h1>
+
+<p><%= @report_description %></p>
+<p><%= link_to "Download CSV", :controller => :reports, :action => @method_name, :format => "csv" %></p>
+<table class="table table-bordered">
+  <tr>
+    <th>Line</th>
+	<th width=auto>FamilySearch ID</th>
+	<th width=auto>First Name</th>
+	<th width=auto>Last Name</th>
+	<th width=auto>Gender</th>
+	<th width=auto>Birth Date</th>
+	<th width=auto>Birth Place</th>
+	<th width=auto>Death Date</th>
+	<th width=auto>Death Place</th>
+  </tr>
+  
+    
+	
+	<% count = 1 %>
+    <% BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped| %>
+	
+	<tr>
+	  <td><%= count %></td>
+      <td>
+	    <a href="https://sandbox.familysearch.org/en/action/hourglassiconicview?bookid=p.<%= ped.id %>&focus=p.<%= ped.id %>&svfs=1&sv=1">
+		  <%= ped.id %>
+		</a>
+	  </td>
+	  <td>
+	    <%= ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
+	      if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
+	        && ped.assertions.names[0].value.forms[0].pieces[0] %>
+	  </td>
+	  <td>		
+	    <%= ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Family"}.collect {|fn| fn.value.to_s}.join(" ") \
+	      if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
+	        && ped.assertions.names[0].value.forms[0].pieces[0] %>
+		<%= ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Suffix"}.collect {|fn| fn.value.to_s}.join(" ") \
+	      if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
+	        && ped.assertions.names[0].value.forms[0].pieces[0] %>
+	  </td>
+	  <td><%= ped.gender %></td>
+	  <td><%= ped.birth.date.normalized if ped.birth && ped.birth.date && ped.birth.date.normalized %></td>
+	  <td><%= ped.birth.place.normalized.value if ped.birth && ped.birth.place && ped.birth.place.normalized && ped.birth.place.normalized.value %></td>
+	  <td><%= ped.death.date.normalized if ped.death && ped.death.date && ped.death.date.normalized %></td>
+	  <td><%= ped.death.place.normalized.value if ped.death && ped.death.place && ped.death.place.normalized && ped.death.place.normalized.value %></td>
+	</tr>
+	</a>
+	  <% count += 1 %>
+	<% end %>
+  
+</table>
