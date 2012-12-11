@@ -1,51 +1,110 @@
 <% provide(:title, "Edit user") %> 
-<h1>Update your profile</h1>
+<h1>Edit your profile</h1>
 
 <div class="row">
-	<div class="span6 offset3">
-		<%= form_for(@user) do |f| %>
-			<%= render 'shared/error_messages' %>
+	<div class="span9 offset2">
+		<%= form_for(@user, :html => { :class => "form-horizontal" }) do |f| %>
+		
+		  <%= render 'shared/error_messages', :object => f.object %>
 
-			<%= f.label :first_name, "First Name" %>
-			<%= f.text_field :first_name %>
+		    <div class="control-group">
+			  <%= f.label :email, "Email", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.text_field :email, class: "input-large", placeholder: "Email", autofocus: true %>
+			  </div>
+            </div>
 			
-			<%= f.label :last_name, "Last Name" %>
-			<%= f.text_field :last_name %>
-
-			<%= f.label :address1, "Address Line 1" %>
-			<%= f.text_field :address1 %>
-
-			<%= f.label :address2, "Address Line 2 (optional)" %>
-			<%= f.text_field :address2 %>
-
-			<%= f.label :city, "City" %>
-			<%= f.text_field :city %>
-
-			<%= f.label :state_province, "State/Province" %>
-			<%= f.text_field :state_province %>
+		    <div class="control-group">
+			  <%= f.label :password, :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.password_field :password, class: "input-large", placeholder: "Password" %>
+			    <span class="help-inline">8 character minimum</span>
+			  </div>
+            </div>
 			
-			<%= f.label :country, "Country" %>
-			<%= f.text_field :country %>
+		    <div class="control-group">
+			  <%= f.label :password_confirmation, "Password Confirmation", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.password_field :password_confirmation, class: "input-large", placeholder: "Password Confirmation" %>
+			  </div>
+            </div>
+		  
+			<div class="control-group">
+			  <%= f.label :first_name, "First Name", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :first_name, class: "input-large", placeholder: "First Name" %>
+			  </div>
+		    </div>
+		  
+		    <div class="control-group">
+			  <%= f.label :last_name, "Last Name", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name" %>
+			  </div>
+            </div>
+          
+	        <div class="control-group">
+			  <%= f.label :address1, "Address Line 1", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :address1, class: "input-large", placeholder: "Address Line 1" %>
+			  </div>
+		    </div>
 			
-			<%= f.label :zip_postalcode, "ZIP/Postal Code" %>
-			<%= f.text_field :zip_postalcode %>
+			<div class="control-group">
+			  <%= f.label :address2, "Address Line 2", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :address2, class: "input-large", placeholder: "Address Line 2" %>
+			  </div>
+		    </div>
 			
-			<%= f.label :phone, "Telephone" %>
-			<%= f.text_field :phone %>
+			<div class="control-group">
+			  <%= f.label :city, "City", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :city, class: "input-large", placeholder: "City" %>
+			  </div>
+		    </div>
 			
-			<%= f.label :email, "Email" %>
-			<%= f.text_field :email %>
-
-			<%= f.label :password %>
-			<%= f.password_field :password %>
-
-			<%= f.label :password_confirmation, "Confirm Password" %>
-			<%= f.password_field :password_confirmation %>
-
-			<%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+			<div class="control-group">
+			  <%= f.label :state_province, "State/Province", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :state_province, class: "input-large", placeholder: "State/Province" %>
+			  </div>
+		    </div>
+			
+			<div class="control-group">
+			  <%= f.label :country, "Country", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :country, class: "input-large", placeholder: "Country" %>
+			  </div>
+		    </div>
+			
+			<div class="control-group">
+			  <%= f.label :zip_postalcode, "ZIP/Postal Code", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :zip_postalcode, class: "input-large", placeholder: "ZIP/Postal Code" %>
+			  </div>
+		    </div>
+			
+			<div class="control-group">
+			  <%= f.label :phone, "Telephone", :class => "control-label" %>
+		      <div class="controls">
+			    <%= f.text_field :phone, class: "input-large", placeholder: "Telephone" %>
+			  </div>
+		    </div>
+			
+			<div class="control-group">
+			  <%= f.label :fs_password, "FamilySearch Password", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.password_field :fs_password, class: "input-large", placeholder: "FamilySearch Password" %>
+			  </div>
+            </div>
+			
+			
+            <div class="control-group">
+		      <div class="controls">
+			    <%= f.submit "Save changes", class: "btn btn-large btn-primary" %>
+			  </div>
+	        </div>
 		<% end %>
-
-		<%= gravatar_for @user %>
-		<a href="http://gravatar.com/emails">change</a>
 	</div>
 </div>

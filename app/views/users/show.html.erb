@@ -1,6 +1,19 @@
-<% provide(:title, @user.name) %>
-<h1>
-	<%= gravatar_for @user %>
-	<%= @user.first_name %> <%= @user.first_name %>
-	<%= @user.first_name %>
-</h1>
+<% provide(:title, @user.first_name) %>
+  <br><br><br>
+  
+  <h3>
+    First Name: <%= @user.first_name %><br>
+    Last Name: <%= @user.last_name %><br>
+  </h3>
+
+  <br><br>
+  <h5>
+    Email: <%= @user.email %><br>
+	Address Line 1: <%= @user.address1 %><br>
+	Address Line 2: <%= @user.address2 %><br>
+    City: <%= @user.city %><br>
+	State/Province: <%= @user.state_province %><br>
+    Country: <%= @user.country %><br>
+	ZIP/Postal Code: <%= @user.zip_postalcode %><br>
+	Telephone: <%= @user.phone %><br>
+  </h5>

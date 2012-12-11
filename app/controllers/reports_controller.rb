@@ -1,9 +1,8 @@
-require 'build_pedigree'
 require 'csv'
 
 class ReportsController < ApplicationController
-  include BuildPedigree
-  helper_method :build_pedigree, :sort_column, :sort_direction
+  helper_method :build_pedigree
+  helper SessionsHelper
   
   	def index
 		@dog = "Hello, how are you today?"
@@ -19,7 +18,6 @@ class ReportsController < ApplicationController
 	def end_of_line
 	  @method_name = "end_of_line"
 	  @filter_criteria = lambda { |ped| (ped.father_id.nil? || ped.mother_id.nil?) }
-	  #@people = BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria)
 	  @report_title = "End-of-Line Report"
 	  @report_description = "This report shows direct-line ancestors at the end of each branch of the family tree."
 	  respond_to do |format|
@@ -27,8 +25,8 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
-                csv << [ped.id, \
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+			    csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
 	                && ped.assertions.names[0].value.forms[0].pieces[0]), \
@@ -59,7 +57,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -90,7 +88,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -122,7 +120,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -153,7 +151,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -184,7 +182,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -215,7 +213,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -246,7 +244,7 @@ class ReportsController < ApplicationController
 		format.csv do
 		  csv_string = CSV.generate do |csv|
             csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-              BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+              build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
                 csv << [ped.id, \
                 (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	              if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -269,4 +267,39 @@ class ReportsController < ApplicationController
 	
 	def new
 	end	
+	
+	
+	require 'ruby-fs-stack'
+	FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
+
+    def build_pedigree
+	  @com = FsCommunicator.new :domain => 'https://sandbox.familysearch.org', :handle_throttling => true    
+	  
+	  if authenticate_me(@com)
+	    @my_pedigree = @com.familytree_v2.pedigree :me
+	  
+	    @my_pedigree.continue_ids.each_slice(2) do |ids|
+		  pedigrees = @com.familytree_v2.pedigree ids
+		  pedigrees.each do |ped|
+		    @my_pedigree.injest ped
+		  end
+	    end
+	  
+	    @pedigree = @my_pedigree
+        @full_pedigree = FamilyTreeV2::Pedigree.new
+	    @persons = @com.familytree_v2.person @pedigree.person_ids#, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+
+	    @persons.each do |person|
+  	      @full_pedigree << person
+	    end
+  
+	    @pedigree = @full_pedigree
+	  end
+    end
+	
+    def authenticate_me(com)
+      com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
+	  com.identity_v1.authenticate :username => current_user.fs_username, :password => current_user.fs_password
+    end
+
 end

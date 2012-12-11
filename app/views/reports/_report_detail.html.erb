@@ -18,8 +18,7 @@
     
 	
 	<% count = 1 %>
-    <% BuildPedigree.build_pedigree.persons.find_all(&@filter_criteria).each do |ped| %>
-	
+	<% build_pedigree.persons.find_all(&@filter_criteria).each do |ped| %>
 	<tr>
 	  <td><%= count %></td>
       <td>
