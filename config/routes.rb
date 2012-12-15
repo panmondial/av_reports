@@ -2,6 +2,7 @@ AvReports::Application.routes.draw do
 	resources :users
 	resources :sessions, only: [:new, :create, :destroy]
 
+
 	resources :reports do
 	  collection do
 	    get :launch_build_file, :end_of_line, :direct_line_all, :missing_birth_date, :missing_birth_place,
@@ -20,7 +21,8 @@ AvReports::Application.routes.draw do
 	match '/about', to: 'static_pages#about'
 	match '/contact', to: 'static_pages#contact'
 	#match '/reports', to: 'static_pages#reports'
-	
+	match '/terms_of_use', to: 'static_pages#terms_of_use'
+	match '/privacy', to: 'static_pages#privacy'
 	
 	
   # The priority is based upon order of creation:

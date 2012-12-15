@@ -1,6 +1,8 @@
 require 'csv'
 
 class ReportsController < ApplicationController
+  before_filter :signed_in_user, except: :index
+  
   helper_method :build_pedigree
   helper SessionsHelper
   
@@ -302,4 +304,7 @@ class ReportsController < ApplicationController
 	  com.identity_v1.authenticate :username => current_user.fs_username, :password => current_user.fs_password
     end
 
+	
+	
+	
 end

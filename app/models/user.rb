@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
             uniqueness: { case_sensitive: false }
 	validates :password, presence: true, length: { minimum: 8 }
 	validates :password_confirmation, presence: true
-	validates_acceptance_of :terms
+	validates_acceptance_of :terms, :message => "must be accepted"
 
 	def create_remember_token
 		self.remember_token = SecureRandom.urlsafe_base64

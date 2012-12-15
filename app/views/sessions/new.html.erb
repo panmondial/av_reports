@@ -2,22 +2,37 @@
 <h1>Sign in</h1>
 
 <div class="row">
-	<div class="span6 offset3">
-		<%= form_tag sessions_path do %>
+  <div class="span7 offset1">
+    <%= form_tag sessions_path, class: "form-horizontal" do %>
+      <div class="control-group">    
+		<%= label_tag :email, "Email", class: "control-label" %>
+		<div class="controls">
+		  <%= text_field_tag :email %>
+		</div>
+	  </div>
+	
+	  <div class="control-group">
+	    <%= label_tag :password, "Password", class: "control-label" %>
+		<div class="controls">
+		  <%= password_field_tag :password %>
+		</div>
+	  </div>
+	
+	  <div class="control-group">
+	    <%= label_tag :remember_me, "Remember me", class: "control-label" %>
+		<div class="controls">
+		  <%= check_box_tag :remember_me, 1, params[:remember_me] %>
+		</div>
+	  </div>
 
-			<%= label_tag :email %>
-			<%= text_field_tag :email %>
-			
-			<%= label_tag :password %>
-			<%= password_field_tag :password %>
-			
-			<%= check_box_tag :remember_me, 1, params[:remember_me] %>
-			<%= label_tag :remember_me %>
-				
-			<%= submit_tag "Sign in", class: "btn btn-large btn-primary" %>
-			
-		<% end %>
+      <div class="control-group">
+		<div class="controls">
+		  <%= submit_tag "Sign in", class: "btn btn-large btn-primary" %>
+		  <span class="help-inline">Not registered yet? <%= link_to "Sign up now!", signup_path %></span>
+		</div>
+	  </div>
+	<% end %>
 
-		<p>Not registered yet? <%= link_to "Sign up now!", signup_path %></p>
-	</div>
+	
+  </div>
 </div>

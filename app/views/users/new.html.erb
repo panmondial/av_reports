@@ -8,28 +8,28 @@
 			<%= render 'shared/error_messages', :object => f.object %>
             
 		  <div class="control-group">
-			<%= f.label :first_name, "First Name", :class => "control-label" %>
+			<%= f.label :first_name, "First Name *", :class => "control-label" %>
 		    <div class="controls">
 			  <%= f.text_field :first_name, class: "input-large", autofocus: true, placeholder: "First Name" %>
 			</div>
 		  </div>
 		  
 		  <div class="control-group">
-			<%= f.label :last_name, "Last Name", :class => "control-label" %>
+			<%= f.label :last_name, "Last Name *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name" %>
 			</div>
           </div>
 		  
 		  <div class="control-group">
-			<%= f.label :email, "Email", :class => "control-label" %>
+			<%= f.label :email, "Email *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.text_field :email, class: "input-large", placeholder: "Email" %>
 			</div>
           </div>
 			
 		  <div class="control-group">
-			<%= f.label :password, "Password", :class => "control-label" %>
+			<%= f.label :password, "Password *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.password_field :password, class: "input-large", placeholder: "Password" %>
 			  <span class="help-inline">8 character minimum</span>
@@ -37,7 +37,7 @@
           </div>
 			
 		  <div class="control-group">
-			<%= f.label :password_confirmation, "Password Confirmation", :class => "control-label" %>
+			<%= f.label :password_confirmation, "Password Confirmation *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.password_field :password_confirmation, class: "input-large", placeholder: "Password Confirmation" %>
 			</div>
@@ -58,19 +58,31 @@
           </div>
 		  
 		  <div class="control-group">
-		    <%= f.label "Accept Terms of Service?", :class => "control-label" %>
+		    <%= f.label :lead_source, "How did you find out about us?", :class => "control-label" %>
+			  <div class="controls styled-select">
+			    <%= select_tag(:week_day, options_for_select([['--  Please select  --',nil],['FamilySearch.org','FamilySearch.org'], ['FamilySearch Center','FamilySearch Center'], ['Family History Library','Family History Library'], ['Friend','Friend'], ['PAF Users Group','PAF Users Group'], ['PAF Support','PAF Support'], ['PAF Review','PAF Review'], ['Dear Myrtle','Dear Myrtle'], ['Cyndis List','Cyndis List'], ['Genealogy-links.org','Genealogy-links.org'], ['Mormon Times','Mormon Times'], ['Other Internet Search','Other Internet Search'], ['Other','Other']]), class: "input-large") %>
+			  </div>
+          </div>
+		  
+		  <% modal_html = capture do %>
+            Accept <%= link_to('Terms of Use *', "#myTOUModal", :"data-toggle" => "modal") %>
+          <% end %>
+
+		  <div class="control-group">
+		    <%= f.label :terms, modal_html, :class => "control-label" %>
 			<div class="controls">
 			  <%= f.check_box :terms %>
 			</div>
 		  </div>
 		  
-          <div class="control-group">
+		  <div class="control-group">
 		    <div class="controls">
 			  <%= f.submit "Create my account", class: "btn btn-large btn-primary" %>
 			</div>
 	      </div>
 		  
-		  
 		<% end %>
+
+		<%= render :partial => 'static_pages/modal_tou' %>
 	</div>
 </div>

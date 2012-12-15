@@ -1,19 +1,49 @@
 <% provide(:title, @user.first_name) %>
-  <br><br><br>
   
-  <h3>
-    First Name: <%= @user.first_name %><br>
-    Last Name: <%= @user.last_name %><br>
-  </h3>
-
-  <br><br>
-  <h5>
-    Email: <%= @user.email %><br>
-	Address Line 1: <%= @user.address1 %><br>
-	Address Line 2: <%= @user.address2 %><br>
-    City: <%= @user.city %><br>
-	State/Province: <%= @user.state_province %><br>
-    Country: <%= @user.country %><br>
-	ZIP/Postal Code: <%= @user.zip_postalcode %><br>
-	Telephone: <%= @user.phone %><br>
-  </h5>
+  <h1>User Profile</h1>
+  
+  <div class="row">
+    <div class="span6 offset3">
+	  <div class="lead"><%= @user.first_name %> <%= @user.last_name %></div>
+	
+      <table class="table">
+        <tr>
+	      <td><strong>Site Login / Email:</strong></td>
+          <td><%= @user.email %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>FamilySearch User Name:</strong></td>
+          <td><%= @user.fs_username %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>Address Line 1:</strong></td>
+	      <td><%= @user.address1 %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>Address Line 2:</strong></td>
+	      <td><%= @user.address2 %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>City:</strong></td>
+	      <td><%= @user.city %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>State/Province:</strong></td>
+	      <td><%= @user.state_province %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>Country:</strong></td>
+	      <td><%= @user.country %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>ZIP/Postal Code:</strong></td>
+	      <td><%= @user.zip_postalcode %></td>
+	    </tr>
+	    <tr>
+	      <td><strong>Telephone:</strong></td>
+	      <td><%= @user.phone %></td>
+	    </tr>
+      </table>
+	  <%= link_to "Edit Account", edit_user_path(current_user), class: "btn btn-primary" %>
+    </div>
+  </div>

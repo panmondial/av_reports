@@ -5,16 +5,19 @@ class SessionsController < ApplicationController
 	
 	def create
 		user = User.find_by_email(params[:email].downcase)
+		store_location_login
 		if user && user.authenticate(params[:password])
 			if params[:remember_me]
-				sign_in user
+			  sign_in user
 			else
-				sign_in_temp user
+			  sign_in_temp user
 			end
-			redirect_back_or root_url :notice => "Logged in!"
+			flash[:success] = "Successfully logged in!"
+			redirect_back_login_or root_url
 		else
 			flash.now[:error] = 'Invalid email/password combination'
 			render 'new'
+			
 		end
 	end
 	

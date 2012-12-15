@@ -39,4 +39,18 @@ module SessionsHelper
 	def store_location
 		session[:return_to] = request.url
 	end
+	
+	def store_location_login
+	  session[:referral_url] = request.referer
+	end
+	
+	def redirect_back_login_or(default)
+	  #if url_for(signin_path) == URI(session[:referral_url]).path
+	  if URI(signin_path).path == URI(session[:referral_url]).path
+	    redirect_to root_url
+	  else
+		redirect_to(session[:referral_url] || default)
+	  end
+	  session.delete(:referral_url)
+	end
 end
