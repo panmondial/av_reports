@@ -16,3 +16,6 @@
 
 # Ignore bundler binstubs
 /bin
+
+# Ignore foreman .env file
+.env
