@@ -93,12 +93,18 @@
 		    </div>
 			
 			<div class="control-group">
+			  <%= f.label :fs_username, "FamilySearch User Name", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.text_field :fs_username, class: "input-large", placeholder: "FamilySearch User Name" %>
+			  </div>
+            </div>
+			
+			<div class="control-group">
 			  <%= f.label :fs_password, "FamilySearch Password", :class => "control-label" %>
 			  <div class="controls">
 			    <%= f.password_field :fs_password, class: "input-large", placeholder: "FamilySearch Password" %>
 			  </div>
             </div>
-			
 			
             <div class="control-group">
 		      <div class="controls">

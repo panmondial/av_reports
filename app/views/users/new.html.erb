@@ -44,6 +44,20 @@
           </div>
 		  
 		  <div class="control-group">
+		    <%= f.label :lead_source, "How did you find out about us?", :class => "control-label", :remote => true %>
+			  <div class="controls styled-select">
+			    <%= f.select(:lead_source, options_for_select([['--  Please Select  --',nil],['FamilySearch.org','FamilySearch.org'], ['FamilySearch Center','FamilySearch Center'], ['Family History Library','Family History Library'], ['Friend','Friend'], ['PAF Users Group','PAF Users Group'], ['PAF Support','PAF Support'], ['PAF Review','PAF Review'], ['Cyndis List','Cyndis List'], ['Mormon Times','Mormon Times'], ['Internet Search','Internet Search'], ['Other','Other']]), class: "input-large") %>
+			  </div>
+          </div>
+		  
+		  <div class="control-group", id="other_lead_source">
+			<%= f.label :lead_source_other, "Other Lead Source *", :class => "control-label" %>
+			<div class="controls">
+			  <%= f.text_field :lead_source_other, class: "input-large", placeholder: "Other Lead Source" %>
+			</div>
+          </div>
+		  		  
+		  <div class="control-group">
 			<%= f.label :fs_username, "FamilySearch User Name", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.text_field :fs_username, class: "input-large", placeholder: "FamilySearch User Name" %>
@@ -54,13 +68,6 @@
 		    <%= f.label :fs_password, "FamilySearch Password", :class => "control-label" %>
 			  <div class="controls">
 			    <%= f.password_field :fs_password, class: "input-large", placeholder: "FamilySearch Password" %>
-			  </div>
-          </div>
-		  
-		  <div class="control-group">
-		    <%= f.label :lead_source, "How did you find out about us?", :class => "control-label" %>
-			  <div class="controls styled-select">
-			    <%= select_tag(:week_day, options_for_select([['--  Please select  --',nil],['FamilySearch.org','FamilySearch.org'], ['FamilySearch Center','FamilySearch Center'], ['Family History Library','Family History Library'], ['Friend','Friend'], ['PAF Users Group','PAF Users Group'], ['PAF Support','PAF Support'], ['PAF Review','PAF Review'], ['Dear Myrtle','Dear Myrtle'], ['Cyndis List','Cyndis List'], ['Genealogy-links.org','Genealogy-links.org'], ['Mormon Times','Mormon Times'], ['Other Internet Search','Other Internet Search'], ['Other','Other']]), class: "input-large") %>
 			  </div>
           </div>
 		  
@@ -84,5 +91,6 @@
 		<% end %>
 
 		<%= render :partial => 'static_pages/modal_tou' %>
+		
 	</div>
 </div>

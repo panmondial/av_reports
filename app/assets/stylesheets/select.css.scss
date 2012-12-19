@@ -1,8 +1,11 @@
 .styled-select select {
    background: transparent;
-   width: auto;
-   padding: 5px;
-   font-size: 14px;
+   width: 210px;
+   padding: 4px;
+   font-size: 13px;
    border: 1px solid #ccc;
-   height: 34px;
+   height: auto;
+   border-radius: 3px;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
 }

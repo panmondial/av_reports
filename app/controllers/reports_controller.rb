@@ -41,8 +41,7 @@ class ReportsController < ApplicationController
 		        (ped.death.date.normalized if ped.death && ped.death.date && ped.death.date.normalized), \
 		        (ped.death.place.normalized.value if ped.death && ped.death.place && ped.death.place.normalized && ped.death.place.normalized.value)] 
               end
-			  
-          end 
+          end
           send_data csv_string, filename: 'End_of_Line.csv'		  
 		end
 	  end
@@ -303,8 +302,5 @@ class ReportsController < ApplicationController
       com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
 	  com.identity_v1.authenticate :username => current_user.fs_username, :password => current_user.fs_password
     end
-
-	
-	
 	
 end
