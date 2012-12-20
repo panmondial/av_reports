@@ -50,14 +50,15 @@
 			  </div>
           </div>
 		  
-		  
-		  <div class="control-group" >
-			<%= f.label :lead_source_other, "Other Lead Source *", :class => "control-label" %>
-			<div class="controls">
-			  <%= f.text_field :lead_source_other, class: "input-large", placeholder: "Other Lead Source" %>
-			</div>
-          </div>
-		  
+		  <div id="other_lead_source">
+		    <div class="control-group">
+			  <%= f.label :lead_source_other, "Other Lead Source *", :class => "control-label" %>
+			  <div class="controls">
+			    <%= f.text_field :lead_source_other, class: "input-large", placeholder: "Other Lead Source" %>
+			  </div>
+            </div>
+		  </div>
+
 		  		  
 		  <div class="control-group">
 			<%= f.label :fs_username, "FamilySearch User Name", :class => "control-label" %>
