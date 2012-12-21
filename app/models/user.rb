@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
 	validates :password, presence: true, length: { minimum: 8 }
 	validates :password_confirmation, presence: true
 	validates :lead_source, presence: true
-	#validates :lead_source_other, presence: true, :if => lambda { |a| a.lead_source=="Other" }
+	validates :lead_source_other, presence: true, :if => lambda { |a| a.lead_source=="Other" }
 	validates_acceptance_of :terms, :message => "must be accepted"
 
 	def create_remember_token
