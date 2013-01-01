@@ -1,0 +1,32 @@
+<% provide(:title, 'Request Password Reset') %>
+<h1>Request Password Reset</h1>
+
+<div class="row">
+  <div class="span9 offset2">
+    <p>Enter your email address, and click the button below to send an email with instructions on resetting your password. Please note that the email will only be valid for 2 hours from the time it is sent to you.</p>
+    <br>
+	
+	<%= form_tag password_resets_path, :method => :post, class: "form-horizontal" do %>
+      <div class="control-group">
+        <%= label_tag :email, "Email Address", class: "control-label" %>
+	    <div class="controls">
+	      <%= text_field_tag :email, params[:email], class: "input-large", placeholder: "Please Enter Email Address" %>
+	    </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+	      <%= submit_tag "Reset Password", class: "btn btn-large btn-primary" %>
+		</div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+

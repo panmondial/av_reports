@@ -1,0 +1,103 @@
+2012-12-21T00:12:49+00:00 app[web.1]: [2012-12-21 00:12:49] INFO  WEBrick::HTTPServer#start: pid=2 port=42236
+2012-12-21T00:12:49+00:00 app[web.1]: [2012-12-21 00:12:49] INFO  ruby 1.9.2 (2011-07-09) [x86_64-linux]
+2012-12-21T00:12:51+00:00 heroku[web.1]: State changed from starting to up
+2012-12-21T00:12:52+00:00 app[web.1]: 
+2012-12-21T00:12:52+00:00 app[web.1]: Started GET "/" for 63.230.2.20 at 2012-12-21 00:12:52 +0000
+2012-12-21T00:12:52+00:00 app[web.1]: 
+2012-12-21T00:12:52+00:00 app[web.1]: Processing by StaticPagesController#home as HTML
+2012-12-21T00:12:52+00:00 app[web.1]:   Rendered layouts/_shim.html.erb (0.3ms)
+2012-12-21T00:12:52+00:00 app[web.1]:   Rendered static_pages/home.html.erb within layouts/application (30.4ms)
+2012-12-21T00:12:52+00:00 app[web.1]:   Rendered layouts/_header.html.erb (3.0ms)
+2012-12-21T00:12:52+00:00 app[web.1]:   Rendered layouts/_footer.html.erb (1.2ms)
+2012-12-21T00:12:52+00:00 app[web.1]: Completed 200 OK in 248ms (Views: 247.5ms | ActiveRecord: 0.0ms)
+2012-12-21T00:12:52+00:00 heroku[router]: at=info method=GET path=/ host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=1ms connect=3ms service=607ms status=200 bytes=3371
+2012-12-21T00:12:53+00:00 heroku[router]: at=info method=GET path=/assets/application-bc77d387129911d2953b60c4d2dbaab9.css host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=4ms service=35ms status=200 bytes=106209
+2012-12-21T00:12:54+00:00 heroku[router]: at=info method=GET path=/assets/application-f534209c5b560b637ec69b31b555e4a9.js host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0
+ms connect=2ms service=25ms status=200 bytes=126493
+2012-12-21T00:12:54+00:00 heroku[router]: at=info method=GET path=/assets/arbor_vitae_logo_sm-5e347fd0770b4a47b4136b0adac78051.jpg host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=5ms service=40ms status=200 bytes=5154
+2012-12-21T00:12:57+00:00 heroku[router]: at=info method=GET path=/favicon.ico host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=3ms service=11ms status=200 bytes=0
+2012-12-21T00:13:10+00:00 app[web.1]: 
+2012-12-21T00:13:10+00:00 app[web.1]: 
+2012-12-21T00:13:10+00:00 app[web.1]: Started GET "/signup" for 63.230.2.20 at 2012-12-21 00:13:10 +0000
+2012-12-21T00:13:10+00:00 app[web.1]: Processing by UsersController#new as HTML
+2012-12-21T00:13:11+00:00 app[web.1]: 
+2012-12-21T00:13:11+00:00 app[web.1]:                                         ^
+2012-12-21T00:13:11+00:00 app[web.1]: Completed 500 Internal Server Error in 140ms
+2012-12-21T00:13:11+00:00 app[web.1]: LINE 4:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:13:11+00:00 app[web.1]:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:13:11+00:00 app[web.1]: ActiveRecord::StatementInvalid (PGError: ERROR:  relation "users" does not exist
+2012-12-21T00:13:11+00:00 app[web.1]: ):
+2012-12-21T00:13:11+00:00 app[web.1]:                 ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+2012-12-21T00:13:
+11+00:00 app[web.1]:              ORDER BY a.attnum
+2012-12-21T00:13:11+00:00 app[web.1]:                AND a.attnum > 0 AND NOT a.attisdropped
+2012-12-21T00:13:11+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:13:11+00:00 app[web.1]: 
+2012-12-21T00:13:11+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:13:11+00:00 app[web.1]: :             SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+2012-12-21T00:13:11+00:00 app[web.1]:               FROM pg_attribute a LEFT JOIN pg_attrdef d
+2012-12-21T00:13:11+00:00 app[web.1]: 
+2012-12-21T00:13:11+00:00 heroku[router]: at=info method=GET path=/signup host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=3ms service=181ms status=500 bytes=643
+2012-12-21T00:13:22+00:00 app[web.1]: 
+2012-12-21T00:13:22+00:00 app[web.1]: 
+2012-12-21T00:13:22+00:00 app[web.1]: Started POST "/sessions" for 63.230.2.20 at 2012-12-21 00:13:22 +0000
+2012-12-21T00:13:22+00:00 app[web.1]:   Parameters: {"utf8"=>"✓", "authenticity_token"=>"vsjzZSgHn0BklARUmVFyKGGdhBBuBcQ7DeOh1zPuGf4=", "email"=>"scarlson@inbox.com", "password"=>"[FILTERED]", "commit"=>"Sign in"}
+2012-12-21T00:13:22+00:00 app[web.1]: Completed 500 Internal Server Error in 3ms
+2012-12-21T00:13:22+00:00 app[web.1]: 
+2012-12-21T00:13:22+00:00 app[web.1]: ActiveRecord::StatementInvalid (PGError: ERROR:  relation "users" does not exist
+2012-12-21T00:13:22+00:00 app[web.1]: Processing by SessionsController#create as HTML
+2012-12-21T00:13:22+00:00 app[web.1]:               FROM pg_attribute a LEFT JOIN pg_attrdef d
+2012-12-21T00:13:22+00:00 app[web.1]: LINE 4:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:13:22+00:00 app[web.1]:                 ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+2012-12-21T00:13:22+00:00 app[web.1]:                                         ^
+2012-12-21T00:13:22+00:00 app[web.1]:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:13:22+00:00 app[web.1]: :             SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+2012-12-21T00:13:22+00:00 app[web.1]:              ORDER BY a.attnum
+2012-12-21T00:13:22+00:00 app[web.1]:                AND a.attnum > 0 AND NOT a.attisdropped
+2012-12-21T00:13:22+00:00 app[web.1]: 
+2012-12-21T00:13:22+00:00 app[web.1]:   app/controllers/sessions_controller.rb:7:in `create'
+2012-12-21T00:13:22+00:00 app[web.1]: 
+2012-12-21T00:13:22+00:00 heroku[router]: at=info method=POST path=/sessions host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=2ms service=34ms status=500 bytes=643
+2012-12-21T00:13:22+00:00 app[web.1]: ):
+2012-12-21T00:15:05+00:00 app[web.1]: 
+2012-12-21T00:15:05+00:00 app[web.1]: Started GET "/signup" for 63.230.2.20 at 2012-12-21 00:15:05 +0000
+2012-12-21T00:15:05+00:00 app[web.1]: 
+2012-12-21T00:15:05+00:00 app[web.1]:                                         ^
+2012-12-21T00:15:05+00:00 app[web.1]: ActiveRecord::StatementInvalid (PGError: ERROR:  relation "users" does not exist
+2012-12-21T00:15:05+00:00 app[web.1]: Completed 500 Internal Server Error in 3ms
+2012-12-21T00:15:05+00:00 app[web.1]:                 ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+2012-12-21T00:15:05+00:00 app[web.1]: 
+2012-12-21T00:15:05+00:00 app[web.1]: Processing by UsersController#new as HTML
+2012-12-21T00:15:05+00:00 app[web.1]: LINE 4:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:15:05+00:00 app[web.1]:               FROM pg_attribute a LEFT JOIN pg_attrdef d
+2012-12-21T00:15:05+00:00 app[web.1]: :             SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+2012-12-21T00:15:05+00:00 app[web.1]:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:15:05+00:00 app[web.1]:                AND a.attnum > 0 AND NOT a.attisdropped
+2012-12-21T00:15:05+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:15:05+00:00 app[web.1]: 
+2012-12-21T00:15:05+00:00 app[web.1]:              ORDER BY a.attnum
+2012-12-21T00:15:05+00:00 app[web.1]: 
+2012-12-21T00:15:05+00:00 app[web.1]: ):
+2012-12-21T00:15:05+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:15:05+00:00 heroku[router]: at=info method=GET path=/signup host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=0ms connect=3ms service=21ms status=500 bytes=643
+2012-12-21T00:16:56+00:00 app[web.1]: Started GET "/signup" for 63.230.2.20 at 2012-12-21 00:16:56 +0000
+2012-12-21T00:16:56+00:00 app[web.1]: 
+2012-12-21T00:16:56+00:00 app[web.1]: 
+2012-12-21T00:16:56+00:00 app[web.1]: Processing by UsersController#new as HTML
+2012-12-21T00:16:56+00:00 app[web.1]: LINE 4:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:16:56+00:00 app[web.1]:                AND a.attnum > 0 AND NOT a.attisdropped
+2012-12-21T00:16:56+00:00 app[web.1]: 
+2012-12-21T00:16:56+00:00 app[web.1]:               FROM pg_attribute a LEFT JOIN pg_attrdef d
+2012-12-21T00:16:56+00:00 app[web.1]: Completed 500 Internal Server Error in 5ms
+2012-12-21T00:16:56+00:00 app[web.1]:                                         ^
+2012-12-21T00:16:56+00:00 app[web.1]: 
+2012-12-21T00:16:56+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:16:56+00:00 app[web.1]: :             SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+2012-12-21T00:16:56+00:00 app[web.1]: ActiveRecord::StatementInvalid (PGError: ERROR:  relation "users" does not exist
+2012-12-21T00:16:56+00:00 app[web.1]:              ORDER BY a.attnum
+2012-12-21T00:16:56+00:00 app[web.1]: ):
+2012-12-21T00:16:56+00:00 app[web.1]:   app/controllers/users_controller.rb:10:in `new'
+2012-12-21T00:16:56+00:00 app[web.1]:                 ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+2012-12-21T00:16:56+00:00 app[web.1]:              WHERE a.attrelid = '"users"'::regclass
+2012-12-21T00:16:56+00:00 heroku[router]: at=info method=GET path=/signup host=obscure-mesa-7065.herokuapp.com fwd=63.230.2.20 dyno=web.1 queue=0 wait=1ms connect=4ms service=26ms status=500 bytes=643
+2012-12-21T00:16:56+00:00 app[web.1]: 
