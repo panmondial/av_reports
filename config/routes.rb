@@ -2,6 +2,8 @@ AvReports::Application.routes.draw do
 
   get "registration_confirmation/new"
 
+	match '/auth/:provider/callback', to: 'sessions#create_omniauth'
+
 	resources :users
 	resources :sessions, only: [:new, :create, :destroy]
 	resources :password_resets
