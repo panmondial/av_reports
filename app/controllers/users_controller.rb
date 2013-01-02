@@ -13,9 +13,9 @@ class UsersController < ApplicationController
 	def create
 		@user = User.new(params[:user])
 		if @user.save
-			sign_in @user
-			flash[:success] = "Welcome to Arbor Vitae Reports!"
-			redirect_to root_url#@user
+			flash[:notice] = "Thank you for signing up with Arbor Vitae. An email has been sent to you with instructions on how to complete your registration."
+			@user.send_registration_confirmation if @user
+			redirect_to root_url
 		else
 			render 'new'
 		end

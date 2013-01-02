@@ -1,8 +1,11 @@
 AvReports::Application.routes.draw do
 
+  get "registration_confirmation/new"
+
 	resources :users
 	resources :sessions, only: [:new, :create, :destroy]
 	resources :password_resets
+	resources :registration_confirmation
 
 	resources :reports do
 	  collection do

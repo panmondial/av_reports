@@ -10,4 +10,9 @@ class UserMailer < ActionMailer::Base
     @user = user
 	mail :to => user.email, :subject => "Arbor Vitae Password Reset"
   end
+  
+  def registration_confirmation(user)
+    @user = user
+	mail :to => user.email, :subject => "Arbor Vitae Registration Confirmation Required"
+  end
 end
