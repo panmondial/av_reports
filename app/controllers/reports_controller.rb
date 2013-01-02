@@ -112,11 +112,24 @@ class ReportsController < ApplicationController
   require 'ruby-fs-stack'
   FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 
-  def build_pedigree
-	@com = FsCommunicator.new :domain => 'https://sandbox.familysearch.org', :handle_throttling => true    
+    def build_pedigree
+	domain = if Rails.env.production?
+	  'https://api.familysearch.org'
+	else
+	  'https://sandbox.familysearch.org'
+	end
+
+	@com = FsCommunicator.new(
+	  :domain => domain,
+	  :handle_throttling => true,
+	  :session => session[:api_session_id]
+	)
+
+
 	  
-	if authenticate_me(@com)
-	  @my_pedigree = @com.familytree_v2.pedigree :me
+	  # TODO: Check for session instead? Handle invalid session exception from ruby-fs-stack (401 Unauthorized)?
+	  #if authenticate_me(@com)
+	    @my_pedigree = @com.familytree_v2.pedigree :me
 	  
 	  @my_pedigree.continue_ids.each_slice(2) do |ids|
 	    pedigrees = @com.familytree_v2.pedigree ids
@@ -129,13 +142,13 @@ class ReportsController < ApplicationController
       @full_pedigree = FamilyTreeV2::Pedigree.new
 	  @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
 
-	  @persons.each do |person|
-  	    @full_pedigree << person
-	  end
+	    @persons.each do |person|
+  	      @full_pedigree << person
+	    end
   
-	  @pedigree = @full_pedigree
-	end
-  end
+	    @pedigree = @full_pedigree
+	  #end
+    end
 	
   def build_csv
 	@csv_array = CSV.generate do |csv|
@@ -161,5 +174,6 @@ class ReportsController < ApplicationController
     com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
 	com.identity_v1.authenticate :username => current_user.fs_username, :password => current_user.fs_password
   end
+	
 	
 end

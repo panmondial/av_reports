@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 	attr_accessible :first_name, :last_name, :address1, :address2, :city, :state_province, :country, :zip_postalcode, :phone, :email, :password, :password_confirmation, :email, :terms, :fs_username, :fs_password, :lead_source, :lead_source_other
 	
-	has_secure_password
+	#has_secure_password
 
 	before_save { |user| user.email = email.downcase }
 	before_save :create_remember_token
@@ -12,10 +12,12 @@ class User < ActiveRecord::Base
 	validates :email, presence:   true,
             format:     { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
-	validates :password, presence: true, length: { minimum: 8 }
-	validates :password_confirmation, presence: true
+	#validates :password, presence: true, length: { minimum: 8 }
+	#validates :password_confirmation, presence: true
 	validates :lead_source, presence: true
 	validates :lead_source_other, presence: true, :if => lambda { |a| a.lead_source=="Other" }
+	validates :username, presence:   true,
+            uniqueness: { case_sensitive: false }
 	validates_acceptance_of :terms, :message => "must be accepted"
 
 	def create_remember_token
@@ -46,5 +48,21 @@ class User < ActiveRecord::Base
 	  self.verified = true
 	  self.registration_token = nil
 	  save!(:validate => false)
+	end
+
+	def self.find_or_create_from_auth_hash(auth_hash)
+		if (u = User.find_by_username(auth_hash[:uid]))
+			u
+		else
+			u = User.new
+			u.email = auth_hash.info[:email]
+			u.username = auth_hash[:uid]
+			u.first_name = auth_hash.info[:first_name]
+			u.last_name = auth_hash.info[:last_name]
+			u.lead_source = 'API'
+			u.save!
+
+			u
+		end
 	end
 end

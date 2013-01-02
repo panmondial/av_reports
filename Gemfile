@@ -5,11 +5,12 @@ gem 'bootstrap-sass'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'json'
 gem 'ruby-fs-stack'
-
+gem 'omniauth-familysearch-identity', '~> 1.0'
 
 group :development, :test do
 	gem 'sqlite3', '1.3.5'
 	gem 'rspec-rails', '2.11.0'
+	gem 'debugger'
 end
 
 # Gems used only for assets and not required

@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(:version => 20130101210813) do
     t.string   "lead_source_other"
     t.string   "password_reset_token"
     t.datetime "password_reset_sent_at"
+    t.string   "username"
     t.boolean  "verified",               :default => false
     t.string   "registration_token"
     t.datetime "registration_sent_at"
@@ -42,5 +43,6 @@ ActiveRecord::Schema.define(:version => 20130101210813) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
+  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
 end
