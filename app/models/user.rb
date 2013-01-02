@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
 			u.username = auth_hash[:uid]
 			u.first_name = auth_hash.info[:first_name]
 			u.last_name = auth_hash.info[:last_name]
+			u.lead_source = 'API'
 			u.save!
 
 			u
