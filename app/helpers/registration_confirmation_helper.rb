@@ -1,0 +1,2 @@
+module RegistrationConfirmationHelper
+end
