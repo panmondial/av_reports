@@ -1,6 +1,6 @@
 AvReports::Application.routes.draw do
 
-  get "registration_confirmation/new"
+  #get "registration_confirmation/new"
 
 	resources :users
 	resources :sessions, only: [:new, :create, :destroy]

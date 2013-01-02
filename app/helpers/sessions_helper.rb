@@ -46,7 +46,7 @@ module SessionsHelper
 	
 	def redirect_back_login_or(default)
 	  #if url_for(signin_path) == URI(session[:referral_url]).path
-	  if URI(signin_path).path == URI(session[:referral_url]).path
+	  if URI(session[:referral_url]).path == URI(signin_path).path
 	    redirect_to root_url
 	  else
 		redirect_to(session[:referral_url] || default)

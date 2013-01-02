@@ -44,7 +44,6 @@ class User < ActiveRecord::Base
 	
 	def registration_verified
 	  self.verified = true
-	  self.registration_token = nil
 	  save!(:validate => false)
 	end
 end
