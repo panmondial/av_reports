@@ -19,9 +19,12 @@ class SessionsController < ApplicationController
         flash.now[:error] = 'Invalid email/password combination'
         render 'new'
       end
-	else
+	elsif user && user.verified == false
 	  flash[:error] = "Your registration has not yet been confirmed. Please look for the registration email sent to you with the subject line: 'Arbor Vitae Registration Confirmation Required', and follow the instructions to complete your registration."
 	  redirect_back_login_or root_url
+	else
+	  flash[:error] = "You have not yet registered with Arbor Vitae. Please register to continue."
+	  redirect_to signup_url
 	end
   end
   
