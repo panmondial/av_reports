@@ -1,4 +1,4 @@
-<%= link_to image_tag("arbor_vitae_logo_sm.jpg", alt: "Arbor Vitae"), 'http://www.arborvitaesoftware.com/' %>
+<%= link_to image_tag attachments["arbor_vitae_logo_sm.jpg"].url, alt: "Arbor Vitae") %>
 <br>
 <p><%= @user.first_name %>,</p>
 
@@ -6,9 +6,9 @@
 
 <p>Thank you for registering to use the Arbor Vitae website. Please add info@arborvitaesoftware.com to your email contacts now, to make sure you never miss any emails announcing new Arbor Vitae reports and features.</p>
 
-<p>We invite you to <%= link_to "learn more about using Arbor Vitae", about_path %> to gain insight into your FamilySearch(TM) Family Tree.</p>
+<p>We invite you to <%= link_to "learn more about using Arbor Vitae", about_url %> to gain insight into your FamilySearch(TM) Family Tree.</p>
 
-<p>Start using the <%= link_to "reporting tool", reports_path %> today!</p>
+<p>Start using the <%= link_to "reporting tool", reports_url %> today!</p>
 
 <p>Please share/follow us today! (Twitter, LinkedIn, Facebook)</p>
 

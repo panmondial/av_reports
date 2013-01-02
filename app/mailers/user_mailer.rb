@@ -13,7 +13,7 @@ class UserMailer < ActionMailer::Base
   
   def registration_confirmation(user)
     @user = user
-	mail :to => user.email, :subject => "Arbor Vitae Registration Confirmation Required"
+	mail :to => user.email, :subject => "Action Required: Arbor Vitae Registration Confirmation"
   end
   
   def registration_welcome(user)
