@@ -5,6 +5,7 @@ gem 'bootstrap-sass'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'json'
 gem 'ruby-fs-stack'
+gem 'newrelic_rpm'
 
 
 group :development, :test do
