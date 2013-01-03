@@ -113,22 +113,14 @@ class ReportsController < ApplicationController
   FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 
     def build_pedigree
-	domain = if Rails.env.production?
-	  'https://api.familysearch.org'
-	else
-	  'https://sandbox.familysearch.org'
-	end
-
+	subdomain = Rails.env.production? ? 'api' : 'sandbox'
 	@com = FsCommunicator.new(
-	  :domain => domain,
+	  :domain => "https://#{subdomain}.familysearch.org",
 	  :handle_throttling => true,
 	  :session => session[:api_session_id]
 	)
 
-
-	  
 	  # TODO: Check for session instead? Handle invalid session exception from ruby-fs-stack (401 Unauthorized)?
-	  #if authenticate_me(@com)
 	    @my_pedigree = @com.familytree_v2.pedigree :me
 	  
 	  @my_pedigree.continue_ids.each_slice(2) do |ids|
@@ -147,7 +139,6 @@ class ReportsController < ApplicationController
 	    end
   
 	    @pedigree = @full_pedigree
-	  #end
     end
 	
   def build_csv
@@ -169,11 +160,5 @@ class ReportsController < ApplicationController
       end
     end 
   end
-	
-  def authenticate_me(com)
-    com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
-	com.identity_v1.authenticate :username => current_user.fs_username, :password => current_user.fs_password
-  end
-	
-	
+
 end

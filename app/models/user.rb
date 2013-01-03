@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 	attr_accessible :first_name, :last_name, :address1, :address2, :city, :state_province, :country, :zip_postalcode, :phone, :email, :password, :password_confirmation, :email, :terms, :fs_username, :fs_password, :lead_source, :lead_source_other
 	
-	#has_secure_password
+	has_secure_password
 
 	before_save { |user| user.email = email.downcase }
 	before_save :create_remember_token
@@ -49,19 +49,14 @@ class User < ActiveRecord::Base
 	  save!(:validate => false)
 	end
 
-	def self.find_or_create_from_auth_hash(auth_hash)
-		if (u = User.find_by_username(auth_hash[:uid]))
-			u
-		else
-			u = User.new
-			u.email = auth_hash.info[:email]
-			u.username = auth_hash[:uid]
-			u.first_name = auth_hash.info[:first_name]
-			u.last_name = auth_hash.info[:last_name]
-			u.lead_source = 'API'
-			u.save!
+  def self.create_with_omniauth(auth_hash)
+    create! do |u|
+      u.email = auth_hash.info[:email]
+      u.username = auth_hash[:uid]
+      u.first_name = auth_hash.info[:first_name]
+      u.last_name = auth_hash.info[:last_name]
+      u.lead_source = 'API'
+    end
+  end
 
-			u
-		end
-	end
 end
