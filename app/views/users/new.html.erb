@@ -44,14 +44,14 @@
           </div>
 		  
 		  <div class="control-group">
-		    <%= f.label :lead_source, "How did you find out about us?", :class => "control-label", :remote => true %>
+		    <%= f.label :lead_source, "How did you learn about us? *", :class => "control-label", :remote => true %>
 			  <div class="controls styled-select">
 			    <%= f.select(:lead_source, options_for_select([['--  Please Select  --',nil],['FamilySearch.org','FamilySearch.org'], ['FamilySearch Center','FamilySearch Center'], ['Family History Library','Family History Library'], ['Friend','Friend'], ['PAF Users Group','PAF Users Group'], ['PAF Support','PAF Support'], ['PAF Review','PAF Review'], ['Cyndis List','Cyndis List'], ['Mormon Times','Mormon Times'], ['Internet Search','Internet Search'], ['Other','Other']]), class: "input-large") %>
 			  </div>
           </div>
 		  
 		  <div class="control-group", id="other_lead_source">
-			<%= f.label :lead_source_other, "Other Lead Source *", :class => "control-label" %>
+			<%= f.label :lead_source_other, "Other Source *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.text_field :lead_source_other, class: "input-large", placeholder: "Other Lead Source" %>
 			</div>

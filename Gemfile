@@ -6,6 +6,7 @@ gem 'bcrypt-ruby', '3.0.1'
 gem 'json'
 gem 'ruby-fs-stack'
 gem 'omniauth-familysearch-identity', '~> 1.0'
+gem 'newrelic_rpm'
 
 group :development, :test do
 	gem 'sqlite3', '1.3.5'

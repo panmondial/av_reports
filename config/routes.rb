@@ -1,6 +1,6 @@
 AvReports::Application.routes.draw do
 
-  get "registration_confirmation/new"
+  #get "registration_confirmation/new"
 
 	match '/auth/:provider/callback', to: 'sessions#create_omniauth'
 
