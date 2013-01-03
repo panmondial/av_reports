@@ -13,3 +13,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore bundler binstubs
+/bin
+
+# Ignore foreman .env file
+.env

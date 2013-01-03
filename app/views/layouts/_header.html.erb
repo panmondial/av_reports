@@ -12,7 +12,7 @@
 			<li><%= link_to "Contact", contact_path %></li>
 		      <% unless signed_in? %>
 			    <li class="divider-vertical"></li>
-				<li><%= link_to "Sign in", signin_path %></li>
+				<li><%= link_to "Sign in", '/auth/familysearch_identity' %></li>
 			  <% end %>
 		  </ul>
 		  

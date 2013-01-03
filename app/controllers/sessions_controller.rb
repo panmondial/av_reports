@@ -45,8 +45,20 @@ class SessionsController < ApplicationController
     # end
   # end
 	
-  def destroy
-    sign_out
-    redirect_to root_url, :notice => "Logged out!"
+	def destroy
+		sign_out
+		redirect_to root_url, :notice => "Logged out!"
+	end
+
+  def create_omniauth
+    auth_hash = request.env['omniauth.auth']
+
+    user = User.find_by_username(auth_hash[:uid]) || User.create_with_omniauth(auth_hash)
+    sign_in_temp user
+    session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
+
+    flash[:success] = 'Successfully logged in!'
+    redirect_back_or(root_url)
   end
+
 end

@@ -12,10 +12,12 @@ class User < ActiveRecord::Base
 	validates :email, presence:   true,
             format:     { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
-	validates :password, presence: true, length: { minimum: 8 }
-	validates :password_confirmation, presence: true
+	#validates :password, presence: true, length: { minimum: 8 }
+	#validates :password_confirmation, presence: true
 	validates :lead_source, presence: true
 	validates :lead_source_other, presence: true, :if => lambda { |a| a.lead_source=="Other" }
+	validates :username, presence:   true,
+            uniqueness: { case_sensitive: false }
 	validates_acceptance_of :terms, :message => "must be accepted"
 
 	def create_remember_token
@@ -46,4 +48,15 @@ class User < ActiveRecord::Base
 	  self.verified = true
 	  save!(:validate => false)
 	end
+
+  def self.create_with_omniauth(auth_hash)
+    create! do |u|
+      u.email = auth_hash.info[:email]
+      u.username = auth_hash[:uid]
+      u.first_name = auth_hash.info[:first_name]
+      u.last_name = auth_hash.info[:last_name]
+      u.lead_source = 'API'
+    end
+  end
+
 end

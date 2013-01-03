@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
 	protect_from_forgery
 	include SessionsHelper
+
+        rescue_from RubyFsStack::Unauthorized, :with => :fs_unauthorized
 	
 	private
 	
@@ -22,4 +24,14 @@ class ApplicationController < ActionController::Base
 			end
 		end
 	
+
+  def fs_unauthorized
+    store_location
+    sign_out
+
+    flash[:error] = 'Your session has expired! Please login again to continue.'
+    #redirect_to root_path
+    redirect_to controller: params[:controller]
+  end
+
 end
