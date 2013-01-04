@@ -1,13 +1,11 @@
-
-<!-- saved from url=(0048)https://raw.github.com/gist/2253296/newrelic.yml -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;"># Here are the settings that are common to all environments
-common: &amp;default_settings
+# Here are the settings that are common to all environments
+common: &default_settings
   # ============================== LICENSE KEY ===============================
-
+ 
   # You must specify the license key associated with your New Relic
   # account.  This key binds your Agent's data to your account in the
   # New Relic service.
-  license_key: '&lt;%= ENV["NEW_RELIC_LICENSE_KEY"] %&gt;'
+  license_key: '<%= ENV["NEW_RELIC_LICENSE_KEY"] %>'
   
   # Agent Enabled (Rails Only)
   # Use this setting to force the agent to run or not run.
@@ -34,23 +32,23 @@ common: &amp;default_settings
   #       - Ajax Service
   #       - All Services
   # 
-  app_name: &lt;%= ENV["NEW_RELIC_APP_NAME"] %&gt;
-
+  app_name: <%= ENV["NEW_RELIC_APP_NAME"] %>
+ 
   # When "true", the agent collects performance data about your 
   # application and reports this data to the New Relic service at 
   # newrelic.com. This global switch is normally overridden for each 
   # environment below. (formerly called 'enabled')
   monitor_mode: true
-
+ 
   # Developer mode should be off in every environment but
   # development as it has very high overhead in memory.
   developer_mode: false
-
+ 
   # The newrelic agent generates its own log file to keep its logging
   # information separate from that of your application.  Specify its
   # log level here.
   log_level: info
-
+ 
   # Optionally set the path to the log file This is expanded from the
   # root directory (may be relative or absolute, e.g. 'log/' or
   # '/var/log/') The agent will attempt to create this directory if it
@@ -59,7 +57,7 @@ common: &amp;default_settings
   
   # Optionally set the name of the log file, defaults to 'newrelic_agent.log'
   # log_file_name: 'newrelic_agent.log'
-
+ 
   # The newrelic agent communicates with the service via http by
   # default.  If you want to communicate via https to increase
   # security, then turn on SSL by setting this value to true.  Note,
@@ -68,7 +66,7 @@ common: &amp;default_settings
   # asynchronously to the threads that process your application code,
   # so it should not impact response times.
   ssl: false
-
+ 
   # EXPERIMENTAL: enable verification of the SSL certificate sent by
   # the server. This setting has no effect unless SSL is enabled
   # above. This may block your application. Only enable it if the data
@@ -89,7 +87,7 @@ common: &amp;default_settings
   # value as Frustrating transactions. 
   # For more about the Apdex standard, see
   # http://newrelic.com/docs/general/apdex
-
+ 
   apdex_t: 0.5
   
   #============================== Browser Monitoring ===============================
@@ -101,7 +99,7 @@ common: &amp;default_settings
       # By default the agent automatically injects the monitoring JavaScript 
       # into web pages. Set this attribute to false to turn off this behavior.
       auto_instrument: true
-
+ 
   # Proxy settings for connecting to the service.
   #
   # If a proxy is used, the host setting is required.  Other settings
@@ -111,7 +109,7 @@ common: &amp;default_settings
   # proxy_port: 8080
   # proxy_user:
   # proxy_pass:
-
+ 
   
   # Tells transaction tracer and error collector (when enabled)
   # whether or not to capture HTTP params.  When true, frameworks can
@@ -121,8 +119,8 @@ common: &amp;default_settings
   #     a comma separated list of HTTP parameter names.
   #     ex: ignored_params: credit_card, ssn, password 
   capture_params: false
-
-
+ 
+ 
   # Transaction tracer captures deep information about slow
   # transactions and sends this to the service once a
   # minute. Included in the transaction is the exact call sequence of
@@ -153,12 +151,12 @@ common: &amp;default_settings
     # then capture and send the current stack trace. This is
     # helpful for pinpointing where long SQL calls originate from
     stack_trace_threshold: 0.500
-
+ 
     # Determines whether the agent will capture query plans for slow
     # SQL queries.  Only supported in mysql and postgres.  Should be
     # set to false when using other adapters.
     # explain_enabled: true
-
+ 
     # Threshold for query execution time below which query plans will not 
     # not be captured.  Relevant only when `explain_enabled` is true.
     # explain_threshold: 0.5
@@ -182,7 +180,7 @@ common: &amp;default_settings
     # which are how 404's get triggered.
     #
     ignore_errors: ActionController::RoutingError
-
+ 
   # (Advanced) Uncomment this to ensure the cpu and memory samplers
   # won't run.  Useful when you are using the agent to monitor an
   # external resource
@@ -195,7 +193,7 @@ common: &amp;default_settings
   # disable_activerecord_instrumentation: true
   # disable_memcache_instrumentation: true
   # disable_dj: true
-
+ 
   # If you're interested in capturing memcache keys as though they
   # were SQL uncomment this flag. Note that this does increase
   # overhead slightly on every memcached call, and can have security
@@ -205,25 +203,25 @@ common: &amp;default_settings
   # Certain types of instrumentation such as GC stats will not work if 
   # you are running multi-threaded.  Please let us know.
   # multi_threaded = false
-
+ 
 # Application Environments
 # ------------------------------------------
 # Environment specific settings are in this section.
 # For Rails applications, RAILS_ENV is used to determine the environment
-# For Java applications, pass -Dnewrelic.environment &lt;environment&gt; to set
+# For Java applications, pass -Dnewrelic.environment <environment> to set
 # the environment
-
+ 
 # NOTE if your application has other named environments, you should
 # provide newrelic configuration settings for these environments here.
-
+ 
 development:
-  &lt;&lt;: *default_settings
+  <<: *default_settings
   # Turn off communication to New Relic service in development mode (also 
   # 'enabled').
   # NOTE: for initial evaluation purposes, you may want to temporarily 
   # turn the agent on in development mode.
   monitor_mode: false
-
+ 
   # Rails Only - when running in Developer Mode, the New Relic Agent will 
   # present performance information on the last 100 transactions you have
   # executed since starting the mongrel.
@@ -233,25 +231,25 @@ development:
   
   # Enable textmate links
   # textmate: true
-
+ 
 test:
-  &lt;&lt;: *default_settings
+  <<: *default_settings
   # It almost never makes sense to turn on the agent when running
   # unit, functional or integration tests or the like.
   monitor_mode: false
-
+ 
 # Turn on the agent in production for 24x7 monitoring.  NewRelic
-# testing shows an average performance impact of &lt; 5 ms per
+# testing shows an average performance impact of < 5 ms per
 # transaction, you you can leave this on all the time without
 # incurring any user-visible performance degradation.
 production:
-  &lt;&lt;: *default_settings
+  <<: *default_settings
   monitor_mode: true
-
+ 
 # Many applications have a staging environment which behaves
 # identically to production.  Support for that environment is provided
 # here.  By default, the staging environment has the agent turned on.
 staging:
-  &lt;&lt;: *default_settings
+  <<: *default_settings
   monitor_mode: true
-  app_name: &lt;%= ENV["NEW_RELIC_APP_NAME"] %&gt; (Staging)</pre></body></html>
+  app_name: <%= ENV["NEW_RELIC_APP_NAME"] %> (Staging)
