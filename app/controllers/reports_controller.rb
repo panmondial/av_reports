@@ -122,24 +122,36 @@ class ReportsController < ApplicationController
 	)
 
 	  # TODO: Check for session instead? Handle invalid session exception from ruby-fs-stack (401 Unauthorized)?
-	    @my_pedigree = Rails.cache.fetch("fs_root_ids", expires_in: 1.hour) do
-		  @com.familytree_v2.pedigree :me
-		end
+	    @my_pedigree = @com.familytree_v2.pedigree :me
+		
+		
+		# @my_pedigree = Rails.cache.fetch("fs_root_ids", expires_in: 1.hour) do
+		  # @com.familytree_v2.pedigree :me
+		# end
 	  
-	  Rails.cache.fetch("fs_ids", expires_in: 1.hour) do
 	    @my_pedigree.continue_ids.each_slice(2) do |ids|
 	      pedigrees = @com.familytree_v2.pedigree ids
 		  pedigrees.each do |ped|
 		    @my_pedigree.injest ped
 		  end
 	    end
-	  end
+	  	  
+	  # Rails.cache.fetch("fs_ids", expires_in: 1.hour) do
+	    # @my_pedigree.continue_ids.each_slice(2) do |ids|
+	      # pedigrees = @com.familytree_v2.pedigree ids
+		  # pedigrees.each do |ped|
+		    # @my_pedigree.injest ped
+		  # end
+	    # end
+	  # end
 	  
 	  @pedigree = @my_pedigree
       @full_pedigree = FamilyTreeV2::Pedigree.new
-	  @persons = Rails.cache.fetch("fs_detail", expires_in: 1.hour) do
-	    @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
-	  end
+	  @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+	  
+	  # @persons = Rails.cache.fetch("fs_detail", expires_in: 1.hour) do
+	    # @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+	  # end
 	  
 	    @persons.each do |person|
   	      @full_pedigree << person
