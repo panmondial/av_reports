@@ -114,7 +114,8 @@ class ReportsController < ApplicationController
   FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 
     def build_pedigree
-	subdomain = Rails.env.production? ? 'api' : 'sandbox'
+	subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
+	#subdomain = Rails.env.production? ? 'api' : 'sandbox'
 	@com = FsCommunicator.new(
 	  :domain => "https://#{subdomain}.familysearch.org",
 	  :handle_throttling => true,
