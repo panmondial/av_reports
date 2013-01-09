@@ -114,30 +114,30 @@ class ReportsController < ApplicationController
   FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 
     def build_pedigree
-	subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
-	#subdomain = Rails.env.production? ? 'api' : 'sandbox'
-	@com = FsCommunicator.new(
-	  :domain => "https://#{subdomain}.familysearch.org",
-	  :handle_throttling => true,
-	  :session => session[:api_session_id]
-	)
+	  subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
+	  #subdomain = Rails.env.production? ? 'api' : 'sandbox'
+	  @com = FsCommunicator.new(
+	    :domain => "https://#{subdomain}.familysearch.org",
+	    :handle_throttling => false,
+	    :session => session[:api_session_id]
+	  )
 
 	  # TODO: Check for session instead? Handle invalid session exception from ruby-fs-stack (401 Unauthorized)?
 	    #@my_pedigree = @com.familytree_v2.pedigree :me
 		
 		
-		@my_pedigree = Rails.cache.fetch("fs_root_ids", expires_in: 1.hour) do
-		  @com.familytree_v2.pedigree :me
-		end
+	  @my_pedigree = Rails.cache.fetch("fs_root_ids", expires_in: 5.minutes) do
+		@com.familytree_v2.pedigree :me
+	  end
 	  
-	    # @my_pedigree.continue_ids.each_slice(2) do |ids|
-	      # pedigrees = @com.familytree_v2.pedigree ids
-		  # pedigrees.each do |ped|
-		    # @my_pedigree.injest ped
-		  # end
-	    # end
+	  # @my_pedigree.continue_ids.each_slice(2) do |ids|
+	    # pedigrees = @com.familytree_v2.pedigree ids
+		# pedigrees.each do |ped|
+		  # @my_pedigree.injest ped
+		# end
+	  # end
 	  	  
-	  Rails.cache.fetch("fs_ids", expires_in: 1.hour) do
+	  Rails.cache.fetch("fs_ids", expires_in: 5.minutes) do
 	    @my_pedigree.continue_ids.each_slice(2) do |ids|
 	      pedigrees = @com.familytree_v2.pedigree ids
 		  pedigrees.each do |ped|
@@ -150,15 +150,15 @@ class ReportsController < ApplicationController
       @full_pedigree = FamilyTreeV2::Pedigree.new
 	  # @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
 	  
-	  @persons = Rails.cache.fetch("fs_detail", expires_in: 1.hour) do
+	  @persons = Rails.cache.fetch("fs_detail", expires_in: 5.minutes) do
 	    @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
 	  end
 	  
-	    @persons.each do |person|
-  	      @full_pedigree << person
-	    end
+	  @persons.each do |person|
+  	    @full_pedigree << person
+	  end
   
-	    @pedigree = @full_pedigree
+	  @pedigree = @full_pedigree
     end
 	
   def build_csv
