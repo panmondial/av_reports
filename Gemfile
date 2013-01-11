@@ -7,8 +7,8 @@ gem 'json'
 gem 'ruby-fs-stack'
 gem 'omniauth-familysearch-identity', '~> 1.0'
 gem 'newrelic_rpm'
-#gem 'thin'
-gem 'puma'
+gem 'thin'
+
 
 group :development, :test do
   gem 'sqlite3', '1.3.5'
