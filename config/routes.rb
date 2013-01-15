@@ -1,9 +1,13 @@
 AvReports::Application.routes.draw do
 
+  get "person_search/search"
+  get "person_search/index"
+
   #get "registration_confirmation/new"
 
 	match '/auth/:provider/callback', to: 'sessions#create_omniauth'
-
+    #match '/auth/:provider/callback', to: 'users#new'
+	
 	resources :users
 	resources :sessions, only: [:new, :create, :destroy]
 	resources :password_resets
@@ -29,6 +33,7 @@ AvReports::Application.routes.draw do
 	#match '/reports', to: 'static_pages#reports'
 	match '/terms_of_use', to: 'static_pages#terms_of_use'
 	match '/privacy', to: 'static_pages#privacy'
+	match '/instructions', to: 'static_pages#signup_instructions'
 	
 	
   # The priority is based upon order of creation:

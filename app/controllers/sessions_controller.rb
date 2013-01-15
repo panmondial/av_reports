@@ -4,61 +4,46 @@ class SessionsController < ApplicationController
   end
 	
   def create
-    user = User.find_by_email(params[:email].downcase)
-	store_location_login
-	if user && user.verified == true
-      if user && user.authenticate(params[:password])
-	    if params[:remember_me]
-          sign_in user
-        else
-          sign_in_temp user
-        end
-        flash[:success] = "Successfully logged in!"
-        redirect_back_login_or root_url
-      else
-        flash[:error] = 'Invalid password. Please try again.'
-        redirect_to signin_url
-      end
-	elsif user && user.verified == false
-	  flash[:error] = "Your registration has not yet been confirmed. Please find the email sent to you with the subject: 'Action Required: Arbor Vitae Registration Confirmation', and follow the instructions to complete your registration."
-	  redirect_back_login_or root_url
-	else
-	  flash[:error] = %Q[Invalid email. If you have not yet registered with Arbor Vitae, please visit the <a href="/signup">signup page</a>.].html_safe
-	  redirect_back_login_or root_url
-	end
+    user = User.find_by_username(auth_hash[:uid])
+    store_location_login
+    
+	sign_in_temp user
+	session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
+	flash[:success] = "Successfully logged in!"
+    redirect_back_or(root_url)
   end
   
-  # def create
-    # user = User.find_by_email(params[:email].downcase)
-	# store_location_login
-    # if user && user.authenticate(params[:password])
-	  # if params[:remember_me]
-        # sign_in user
-      # else
-        # sign_in_temp user
-      # end
-      # flash[:success] = "Successfully logged in!"
-      # redirect_back_login_or root_url
-    # else
-      # flash.now[:error] = 'Invalid email/password combination'
-      # render 'new'
-    # end
-  # end
-	
-	def destroy
-		sign_out
-		redirect_to root_url, :notice => "Logged out!"
-	end
+  def destroy
+    sign_out
+    redirect_to root_url, :notice => "Logged out!"
+  end
 
+	
+  # def create_omniauth
+    # auth_hash = request.env['omniauth.auth']
+
+    # user = User.find_by_username(auth_hash[:uid]) || User.create_with_omniauth(auth_hash)
+    # sign_in_temp user
+    # session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
+
+    # flash[:success] = 'Successfully logged in!'
+    # redirect_back_or(root_url)
+  # end
+  
   def create_omniauth
     auth_hash = request.env['omniauth.auth']
-
-    user = User.find_by_username(auth_hash[:uid]) || User.create_with_omniauth(auth_hash)
-    sign_in_temp user
-    session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
-
-    flash[:success] = 'Successfully logged in!'
-    redirect_back_or(root_url)
+    
+	user = User.find_by_username(auth_hash[:uid])
+	if user
+	  sign_in_temp user
+      session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
+ 
+      flash[:success] = 'Successfully logged in!'
+      redirect_back_or(root_url)
+	else
+	  session[:auth_hash]=auth_hash
+	  redirect_to signup_path
+	end
   end
 
 end

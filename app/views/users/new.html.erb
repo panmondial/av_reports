@@ -10,14 +10,21 @@
 		  <div class="control-group">
 			<%= f.label :first_name, "First Name *", :class => "control-label" %>
 		    <div class="controls">
-			  <%= f.text_field :first_name, class: "input-large", autofocus: true, placeholder: "First Name" %>
+			  <%= f.text_field :first_name, class: "input-large", autofocus: true, placeholder: "First Name", disabled: true %>
 			</div>
 		  </div>
 		  
 		  <div class="control-group">
 			<%= f.label :last_name, "Last Name *", :class => "control-label" %>
 			<div class="controls">
-			  <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name" %>
+			  <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name", disabled: true %>
+			</div>
+          </div>
+		   		  
+		  <div class="control-group">
+			<%= f.label :username, "FamilySearch User Name *", :class => "control-label" %>
+			<div class="controls">
+			  <%= f.text_field :username, class: "input-large",  placeholder: "FamilySearch User Name", disabled: true %>
 			</div>
           </div>
 		  
@@ -29,21 +36,6 @@
           </div>
 			
 		  <div class="control-group">
-			<%= f.label :password, "Password *", :class => "control-label" %>
-			<div class="controls">
-			  <%= f.password_field :password, class: "input-large", placeholder: "Password" %>
-			  <span class="help-inline">8 character minimum</span>
-			</div>
-          </div>
-			
-		  <div class="control-group">
-			<%= f.label :password_confirmation, "Password Confirmation *", :class => "control-label" %>
-			<div class="controls">
-			  <%= f.password_field :password_confirmation, class: "input-large", placeholder: "Password Confirmation" %>
-			</div>
-          </div>
-		  
-		  <div class="control-group">
 		    <%= f.label :lead_source, "How did you learn about us? *", :class => "control-label", :remote => true %>
 			  <div class="controls styled-select">
 			    <%= f.select(:lead_source, options_for_select([['--  Please Select  --',nil],['FamilySearch.org','FamilySearch.org'], ['FamilySearch Center','FamilySearch Center'], ['Family History Library','Family History Library'], ['Friend','Friend'], ['PAF Users Group','PAF Users Group'], ['PAF Support','PAF Support'], ['PAF Review','PAF Review'], ['Cyndis List','Cyndis List'], ['Mormon Times','Mormon Times'], ['Internet Search','Internet Search'], ['Other','Other']]), class: "input-large") %>
@@ -54,13 +46,6 @@
 			<%= f.label :lead_source_other, "Other Source *", :class => "control-label" %>
 			<div class="controls">
 			  <%= f.text_field :lead_source_other, class: "input-large", placeholder: "Other Lead Source" %>
-			</div>
-          </div>
-		  		  
-		  <div class="control-group">
-			<%= f.label :username, "FamilySearch User Name *", :class => "control-label" %>
-			<div class="controls">
-			  <%= f.text_field :username, class: "input-large", placeholder: "FamilySearch User Name" %>
 			</div>
           </div>
 		  

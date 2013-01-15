@@ -1,0 +1,14 @@
+Your search is done!
+
+<%= search.count %>
+
+	   
+<% search.results.each do |result| %>
+<tr>
+  <td><%= result.score %></td>
+  <td><%= result.id %></td>
+  <td><%= result.person %></td>
+  <td><%= result.person.gender %></td>
+  <td><%= result.person.birth.date.original %></td>
+</tr>
+<% end %>

@@ -7,15 +7,19 @@ class UsersController < ApplicationController
 	end
   
 	def new
-		@user = User.new
+		#auth_hash = request.env['omniauth.auth']
+		# @user = User.new :first_name => auth_hash.info[:first_name], :last_name => auth_hash.info[:last_name], :email => auth_hash.info[:email], :username => auth_hash[:uid]
+		auth_hash = session[:auth_hash]
+		@user = User.new :first_name => auth_hash.info[:first_name], :last_name => auth_hash.info[:last_name], :email => auth_hash.info[:email], :username => auth_hash[:uid]
 	end
 	
 	def create
 		@user = User.new(params[:user])
 		if @user.save
-			flash[:notice] = "Thank you for signing up with Arbor Vitae. An email has been sent to you with instructions on how to complete your registration."
-			@user.send_registration_confirmation if @user
-			redirect_to root_url
+		  sign_in_temp @user
+		  session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
+	      flash[:success] = "Successfully logged in!"
+		  redirect_to root_url
 		else
 			render 'new'
 		end

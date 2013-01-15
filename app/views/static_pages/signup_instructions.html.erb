@@ -1,0 +1,12 @@
+<% provide(:title, 'Sign Up Instructions') %>
+<h1>Sign Up Instructions</h1>
+
+<p>To sign up for Arbor Vitae Reports, it's as easy as 1, 2, 3:</p>
+
+<ol>
+  <li>First, click on the "Begin Now!" button below to login to the FamilySearch site, connecting Arbor Vitae with your FamilySearch account. (If you don't have a FamilySearch account, <a href="#">click here</a>.)</li><br>
+  <li>After logging in to the FamilySearch site, you will be redirected back to the Arbor Vitae site to complete your registration.</li><br>
+  <li>After your initial registration with Arbor Vitae, each time you visit the site, you will be prompted to login using only your FamilySearch username and password.</li>
+</ol>
+
+  <%= link_to "Begin now!", '/auth/familysearch_identity', class: "btn btn-large btn-success" %>
