@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
-	attr_accessible :first_name, :last_name, :address1, :address2, :city, :state_province, :country, :zip_postalcode, :phone, :email, :password, :password_confirmation, :email, :username, :terms, :lead_source, :lead_source_other
+	attr_accessible :first_name, :last_name, :address1, :address2, :city, :state_province, :country, :zip_postalcode, :phone, :email, :username, :terms, :lead_source, :lead_source_other
 	
-	has_secure_password
+	#has_secure_password
 
 	before_save { |user| user.email = email.downcase }
 	before_save :create_remember_token
@@ -12,8 +12,6 @@ class User < ActiveRecord::Base
 	validates :email, presence:   true,
             format:     { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
-	#validates :password, presence: true, length: { minimum: 8 }
-	#validates :password_confirmation, presence: true
 	validates :lead_source, presence: true
 	validates :lead_source_other, presence: true, :if => lambda { |a| a.lead_source=="Other" }
 	validates :username, presence:   true,

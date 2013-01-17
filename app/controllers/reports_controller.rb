@@ -113,7 +113,7 @@ class ReportsController < ApplicationController
   require 'ruby-fs-stack'
   FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
 
-    def build_pedigree
+    def build_pedigree2
 	  subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
 	  #subdomain = Rails.env.production? ? 'api' : 'sandbox'
 	  @com = FsCommunicator.new(
@@ -180,5 +180,76 @@ class ReportsController < ApplicationController
       end
     end 
   end
+
+  
+  
+  
+  
+  
+  
+  
+    #TEST CODE FOLLOWS:
+  
+  
+def authenticate_me(com)
+  com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
+  com.identity_v1.authenticate :username => 'api-user-2082', :password => 'f1e0'
+end
+
+def connect_familysearch
+  ##First, it connects with the FamilySearch site and grabs the 4-generation pedigree for the specified root person (:me is default for logged-in user)
+  subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
+  @com = FsCommunicator.new(
+    :domain => "https://#{subdomain}.familysearch.org",
+	:handle_throttling => false,
+	:session => session[:api_session_id]
+  )
+  @my_pedigree = @com.familytree_v2.pedigree root_person
+end
+
+
+	
+  
+def build_ped_skeleton
+  ##Next, it takes the last generation of each branch of the pedigree (where parents=nil), and fetches a skeleton of the pedigree - as far back as it will go. (processed in batches of 2)
+  @my_pedigree.continue_ids.each_slice(2) do |ids|
+	pedigrees = @com.familytree_v2.pedigree ids
+	pedigrees.each do |ped|
+	  @my_pedigree.injest ped
+	end
+  end
+end
+	
+def build_ped_detail
+  ##Then it takes the ids for each person in the skeleton of the pedigree, and fetches the person detail for each person (processed in batches of 10)	
+  @pedigree = @my_pedigree
+  @full_pedigree = FamilyTreeV2::Pedigree.new
+  @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+	  
+  @persons.each do |person|
+    @full_pedigree << person
+  end
+  
+  @pedigree = @full_pedigree
+end
+
+def build_pedigree
+  connect_familysearch
+  build_ped_skeleton
+  build_ped_detail
+end  
+
+
+
+private
+
+  def root_person
+    if params[:person_select]=="me"
+      :me
+    else
+      params[:other_person]
+    end
+  end
+
 
 end

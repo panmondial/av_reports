@@ -21,18 +21,52 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <h4><%= link_to "Reports Home", reports_path %></h4> </br>
+			
+			<%= form_tag("/reports/direct_line_all", :method => "get") do %>
+              <p>
+			    <b>Step 1: Select Starting Person</b>
+			  <br>
+			    <%= radio_button_tag(:person_select, :me, true, :class => "radio inline") %>&nbsp;Self
+			    <%= radio_button_tag(:person_select, "other", false, :class => "radio inline") %>&nbsp;Other
+			  
+			    <span id="other_person">
+			      <%= text_field_tag 'other_person', nil, :maxlength => 8, :class => "input-medium", placeholder: "MMMM-QQQQ" %>
+                </span>
+			  </p>
+			  <br>
+			  
+			  <p>
+			    <b>Step 2: Load Data</b>
+			  <br>
+			    <div class="progress progress-striped">
+                  <div class="bar" style="width: 40%;"></div>
+                </div>
+                <%= link_to "Load", "#", class: "btn btn-small btn-info" %>			
+			  </p>
+			  <br>
+			  
+			  <hr>
+			  <hr>
+			  
+			  <p>
+			    <b>Step 3: Select Report</b>
+			  <br>
+			    <div class="controls styled-select">
+			      <%= select_tag :report_name, options_for_select([['--  Please Select  --',nil],['End-of-Line Ancestors','End-of-Line Ancestors'], ['Direct Line Ancestors','Direct Line Ancestors'], ['Missing Birth Date','Missing Birth Date'], ['Missing Birth Place','Missing Birth Place'], ['Incomplete Birth Date','Incomplete Birth Date'], ['Missing Death Date','Missing Death Date'], ['Missing Death Place','Missing Death Place'], ['Incomplete Death Date','Incomplete Death Date']]), class: "input-xlarge" %>
+			    </div>
+			  </p>
+			 			  
+			  <p>
+			    <b>Step 4: Run Report</b>
+			  <br>
+				<%= submit_tag "Run Report", class: "btn btn-large btn-success" %>
+			  </p>
+			<% end %>
+			
+			
 			<ul class="nav nav-list">
               <li class="nav-header">Ancestor Reports</li>
               <li><%= link_to "End-of-Line Ancestors", :controller => :reports, :action => :end_of_line %></li>
-			  <li><%= link_to "Direct Line Ancestors", :controller => :reports, :action => :direct_line_all %></li>
-              <li><%= link_to "Direct Line Missing Birth Date", :controller => :reports, :action => :missing_birth_date %></li>
-			  <li><%= link_to "Direct Line Missing Birth Place", :controller => :reports, :action => :missing_birth_place %></li>
-			  <li><%= link_to "Direct Line Incomplete Birth Date", :controller => :reports, :action => :incomplete_birth_date %></li>
-			  <li>Direct Line Incomplete Birth Place</li>
-			  <li><%= link_to "Direct Line Missing Death Date", :controller => :reports, :action => :missing_death_date %></li>
-			  <li><%= link_to "Direct Line Missing Death Place", :controller => :reports, :action => :missing_death_place %></li>
-			  <li><%= link_to "Direct Line Incomplete Death Date", :controller => :reports, :action => :incomplete_death_date %></li>
-			  <li>Direct Line Incomplete Death Place</li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

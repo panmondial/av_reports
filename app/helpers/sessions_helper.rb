@@ -53,4 +53,17 @@ module SessionsHelper
 	  end
 	  session.delete(:referral_url)
 	end
+
+	# def auth_hash
+      # @auth_hash = request.env['omniauth.auth']
+	# end
+	
+	# def auth_hash=(hash)
+		# @auth_hash = hash
+	# end
+	
+	# def auth_hash?(hash)
+		# hash == auth_hash
+	# end
+	
 end

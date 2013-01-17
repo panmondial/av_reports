@@ -10,21 +10,21 @@
 		  <div class="control-group">
 			<%= f.label :first_name, "First Name *", :class => "control-label" %>
 		    <div class="controls">
-			  <%= f.text_field :first_name, class: "input-large", autofocus: true, placeholder: "First Name", disabled: true %>
+			  <%= f.text_field :first_name, class: "input-large", autofocus: true, placeholder: "First Name", readonly: true %>
 			</div>
 		  </div>
 		  
 		  <div class="control-group">
 			<%= f.label :last_name, "Last Name *", :class => "control-label" %>
 			<div class="controls">
-			  <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name", disabled: true %>
+			  <%= f.text_field :last_name, class: "input-large", placeholder: "Last Name", readonly: true %>
 			</div>
           </div>
 		   		  
 		  <div class="control-group">
 			<%= f.label :username, "FamilySearch User Name *", :class => "control-label" %>
 			<div class="controls">
-			  <%= f.text_field :username, class: "input-large",  placeholder: "FamilySearch User Name", disabled: true %>
+			  <%= f.text_field :username, class: "input-large",  placeholder: "FamilySearch User Name", readonly: true %>
 			</div>
           </div>
 		  
