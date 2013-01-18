@@ -22,7 +22,7 @@
           <div class="well sidebar-nav">
             <h4><%= link_to "Reports Home", reports_path %></h4> </br>
 			
-			<%= form_tag("/reports/direct_line_all", :method => "get") do %>
+			<%= form_tag("/reports/run_reports", :method => "get") do %>
               <p>
 			    <b>Step 1: Select Starting Person</b>
 			  <br>
@@ -41,9 +41,8 @@
 			    <div class="progress progress-striped">
                   <div class="bar" style="width: 40%;"></div>
                 </div>
-                <%= link_to "Load", "#", class: "btn btn-small btn-info" %>			
+                <%= link_to "Load", {:controller => :reports, :action => :build_detail_controller}, :class => "btn btn-small btn-info" %>				
 			  </p>
-			  <br>
 			  
 			  <hr>
 			  <hr>
@@ -64,10 +63,6 @@
 			<% end %>
 			
 			
-			<ul class="nav nav-list">
-              <li class="nav-header">Ancestor Reports</li>
-              <li><%= link_to "End-of-Line Ancestors", :controller => :reports, :action => :end_of_line %></li>
-            </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">

@@ -1,4 +1,5 @@
 require 'csv'
+require 'build_detail'
 
 
 class ReportsController < ApplicationController
@@ -189,13 +190,6 @@ class ReportsController < ApplicationController
   
   
     #TEST CODE FOLLOWS:
-  
-  
-def authenticate_me(com)
-  com.key = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
-  com.identity_v1.authenticate :username => 'api-user-2082', :password => 'f1e0'
-end
-
 def connect_familysearch
   ##First, it connects with the FamilySearch site and grabs the 4-generation pedigree for the specified root person (:me is default for logged-in user)
   subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
@@ -207,11 +201,8 @@ def connect_familysearch
   @my_pedigree = @com.familytree_v2.pedigree root_person
 end
 
-
-	
-  
 def build_ped_skeleton
-  ##Next, it takes the last generation of each branch of the pedigree (where parents=nil), and fetches a skeleton of the pedigree - as far back as it will go. (processed in batches of 2)
+##Next, it takes the last generation of each branch of the pedigree (where parents=nil), and fetches a skeleton of the pedigree - as far back as it will go. (processed in batches of 2)
   @my_pedigree.continue_ids.each_slice(2) do |ids|
 	pedigrees = @com.familytree_v2.pedigree ids
 	pedigrees.each do |ped|
@@ -239,7 +230,26 @@ def build_pedigree
   build_ped_detail
 end  
 
+def build_detail_controller
+  connect_familysearch
+  build_ped_skeleton 
+  Delayed::Job.enqueue(BuildDetail.new(@my_pedigree, FamilyTreeV2))
+  redirect_to root_path
+end
 
+def run_reports
+  case params[:report_name]
+    when 'End-of-Line Ancestors' then end_of_line
+	when 'Direct Line Ancestors' then direct_line_all
+	when 'Missing Birth Date' then missing_birth_date
+	when 'Missing Birth Place' then missing_birth_place
+    when 'Incomplete Birth Date' then incomplete_birth_date
+    when 'Missing Death Date' then missing_death_date
+    when 'Missing Death Place' then missing_death_place
+    when 'Incomplete Death Date' then incomplete_death_date
+    else end_of_line
+  end
+end
 
 private
 
@@ -250,6 +260,5 @@ private
       params[:other_person]
     end
   end
-
-
+  
 end

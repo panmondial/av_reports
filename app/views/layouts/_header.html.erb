@@ -10,10 +10,8 @@
 			<li><%= link_to "About",   about_path %></li>
 			<li class="divider-vertical"></li>
 			<li><%= link_to "Contact", contact_path %></li>
-		      <% unless signed_in? %>
-			    <li class="divider-vertical"></li>
-				<li><%= link_to "Sign in", '/auth/familysearch_identity' %></li>
-			  <% end %>
+		  </ul>
+		      
 		  </ul>
 		  
 		  <% if signed_in? %>
@@ -31,15 +29,12 @@
 				  </li>
 				</ul>
 			  </li>
-            <% else %>
-			  <%= form_tag sessions_path, class: "navbar-form pull-right" do %>
-                <%= text_field_tag :email, nil, class: "input-small", placeholder: "Email" %>
-			    <%= password_field_tag :password, nil, class: "input-small", placeholder: "Password" %>
-                <%= check_box_tag :remember_me, 1, params[:remember_me], title: "select to remember login" %>
-			    <%= submit_tag "Sign in", class: "btn btn-mini" %>
-			  <% end %>
-			<% end %>
-		  </ul>
+			</ul>
+          <% else %>
+		    <ul class="nav pull-right">
+			  <li><%= link_to "Sign in", '/auth/familysearch_identity' %></li>
+			</ul>
+          <% end %>
 		</div>
 	</div>
 </header>

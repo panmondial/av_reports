@@ -15,9 +15,7 @@ AvReports::Application.routes.draw do
 
 	resources :reports do
 	  collection do
-	    get :launch_build_file, :end_of_line, :direct_line_all, :missing_birth_date, :missing_birth_place,
-	      :incomplete_birth_date, :incomplete_death_date, :missing_death_date, :missing_death_place, 
-		  :incomplete_death_date
+	    get :launch_build_file, :end_of_line, :direct_line_all, :missing_birth_date, :missing_birth_place, :incomplete_birth_date, :incomplete_death_date, :missing_death_date, :missing_death_place, :incomplete_death_date, :run_reports, :build_detail_controller
 	  end
 	end
 	
