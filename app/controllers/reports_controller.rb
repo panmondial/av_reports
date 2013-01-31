@@ -1,6 +1,4 @@
 require 'csv'
-require 'build_detail'
-
 
 class ReportsController < ApplicationController
   before_filter :signed_in_user, except: :index
@@ -190,15 +188,16 @@ class ReportsController < ApplicationController
   
   
     #TEST CODE FOLLOWS:
-def connect_familysearch
+def connect_familysearch(person)
   ##First, it connects with the FamilySearch site and grabs the 4-generation pedigree for the specified root person (:me is default for logged-in user)
   subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
   @com = FsCommunicator.new(
     :domain => "https://#{subdomain}.familysearch.org",
-	:handle_throttling => false,
+	:handle_throttling => true,
 	:session => session[:api_session_id]
   )
-  @my_pedigree = @com.familytree_v2.pedigree root_person
+  @my_pedigree = @com.familytree_v2.pedigree person
+  return @my_pedigree
 end
 
 def build_ped_skeleton
@@ -209,32 +208,47 @@ def build_ped_skeleton
 	  @my_pedigree.injest ped
 	end
   end
+  return @my_pedigree
 end
 	
 def build_ped_detail
   ##Then it takes the ids for each person in the skeleton of the pedigree, and fetches the person detail for each person (processed in batches of 10)	
   @pedigree = @my_pedigree
+  
   @full_pedigree = FamilyTreeV2::Pedigree.new
-  @persons = @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
-	  
+  @persons = Rails.cache.fetch("fs_detail", expires_in: 5.minutes) do
+    @com.familytree_v2.person @pedigree.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary'
+  end  
   @persons.each do |person|
     @full_pedigree << person
   end
-  
   @pedigree = @full_pedigree
 end
 
 def build_pedigree
-  connect_familysearch
-  build_ped_skeleton
-  build_ped_detail
-end  
+  @pedigree = Rails.cache.read("build_detail_cache")
+end
+
+def build_skeleton
+  Delayed::Job.enqueue(BuildSkeleton.new(@my_pedigree, @com))
+end
 
 def build_detail_controller
-  connect_familysearch
-  build_ped_skeleton 
-  Delayed::Job.enqueue(BuildDetail.new(@my_pedigree, FamilyTreeV2))
-  redirect_to root_path
+  connect_familysearch(params[:root_person])
+  puts "1st part done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  
+  @my_pedigree = Rails.cache.read("build_skeleton_cache") || build_ped_skeleton
+  
+  puts "2nd part done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  @pedigree = @my_pedigree
+  @full_pedigree = FamilyTreeV2::Pedigree.new
+
+  Delayed::Job.enqueue(BuildDetail.new(@pedigree, @com, @full_pedigree))
+  
+  respond_to do |format|  
+    format.html
+    format.js   { render :nothing => true }  
+  end  
 end
 
 def run_reports
@@ -251,13 +265,14 @@ def run_reports
   end
 end
 
+
 private
 
   def root_person
     if params[:person_select]=="me"
-      :me
+      params[:person_select]
     else
-      params[:other_person]
+      params[:other_person_field]
     end
   end
   

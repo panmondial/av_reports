@@ -1,5 +1,0 @@
-<%= form_tag({:controller => "person_search", :action => "search"}, :method => "get") do %>
-  <%= label_tag(:q, "Search for:") %>
-  <%= text_field_tag :name, params[:name] %>
-  <%= submit_tag "Search", name: nil %>
-<% end %>

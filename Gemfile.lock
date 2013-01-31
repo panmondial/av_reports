@@ -53,6 +53,7 @@ GEM
     coffee-script-source (1.4.0)
     columnize (0.3.6)
     daemons (1.1.9)
+    dalli (2.6.0)
     debugger (1.2.3)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.1.1)
@@ -194,6 +195,7 @@ DEPENDENCIES
   bootstrap-sass
   capybara (= 1.1.2)
   coffee-rails (= 3.2.2)
+  dalli
   debugger
   delayed_job_active_record
   factory_girl_rails (= 4.1.0)

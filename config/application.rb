@@ -66,6 +66,8 @@ module AvReports
     config.assets.version = '1.0'
 	
 	config.assets.initialize_on_precompile = false
+	
+	config.cache_store = :dalli_store
 
   end
 end

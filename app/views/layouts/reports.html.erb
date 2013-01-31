@@ -30,7 +30,7 @@
 			    <%= radio_button_tag(:person_select, "other", false, :class => "radio inline") %>&nbsp;Other
 			  
 			    <span id="other_person">
-			      <%= text_field_tag 'other_person', nil, :maxlength => 8, :class => "input-medium", placeholder: "MMMM-QQQQ" %>
+			      <%= text_field_tag 'other_person_field', nil, :maxlength => 8, :class => "input-medium" %>
                 </span>
 			  </p>
 			  <br>
@@ -41,7 +41,9 @@
 			    <div class="progress progress-striped">
                   <div class="bar" style="width: 40%;"></div>
                 </div>
-                <%= link_to "Load", {:controller => :reports, :action => :build_detail_controller}, :class => "btn btn-small btn-info" %>				
+                <%#= link_to "Load", "#", :id => "Load", :class => "btn btn-small btn-info" %>
+				<%#= link_to "Load", {:controller => :reports, :action => :build_detail_controller}, :class => "btn btn-small btn-info" %>	
+				<%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-small btn-info" %>
 			  </p>
 			  
 			  <hr>
