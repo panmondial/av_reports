@@ -2,7 +2,7 @@
 
 <p><%= @report_description %></p>
 
-<p><%= link_to "Download CSV", :controller => :reports, :action => @method_name, :format => "csv" %></p>
+<p><%= link_to "Download CSV", :controller => :reports, :action => params[:type].to_s, :format => "csv" %></p>
 <table class="table table-bordered">
   <tr>
     <th>Line</th>

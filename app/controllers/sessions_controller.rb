@@ -41,6 +41,7 @@ class SessionsController < ApplicationController
       session[:api_session_id] = auth_hash.credentials.token # should we store the API session id in cookie?
  
       flash[:success] = 'Successfully logged in!'
+	  # Delayed::Job.enqueue(BuildBasic.new(session[:api_session_id]))
       redirect_back_or(root_url)
 	else
 	  session[:auth_hash_first_name]=auth_hash.info[:first_name]
@@ -50,6 +51,6 @@ class SessionsController < ApplicationController
 	  session[:auth_hash_token]=auth_hash.credentials.token
       redirect_to signup_path
 	end
-  end
+  end  
   
 end

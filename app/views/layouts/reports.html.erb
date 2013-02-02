@@ -47,20 +47,20 @@
 			  </p>
 			  
 			  <hr>
-			  <hr>
 			  
 			  <p>
 			    <b>Step 3: Select Report</b>
 			  <br>
 			    <div class="controls styled-select">
-			      <%= select_tag :report_name, options_for_select([['--  Please Select  --',nil],['End-of-Line Ancestors','End-of-Line Ancestors'], ['Direct Line Ancestors','Direct Line Ancestors'], ['Missing Birth Date','Missing Birth Date'], ['Missing Birth Place','Missing Birth Place'], ['Incomplete Birth Date','Incomplete Birth Date'], ['Missing Death Date','Missing Death Date'], ['Missing Death Place','Missing Death Place'], ['Incomplete Death Date','Incomplete Death Date']]), class: "input-xlarge" %>
-			    </div>
+			      <%= select_tag :type, options_for_select([['--  Please Select  --',nil],['End-of-Line Ancestors','end_of_line'], ['Direct Line Ancestors','direct_line_all'], ['Missing Birth Date','missing_birth_date'], ['Missing Birth Place','missing_birth_place'], ['Incomplete Birth Date','incomplete_birth_date'], ['Missing Death Date','missing_death_date'], ['Missing Death Place','missing_death_place'], ['Incomplete Death Date','incomplete_death_date']]), class: "input-xlarge" %>
+				</div>
 			  </p>
 			 			  
 			  <p>
 			    <b>Step 4: Run Report</b>
 			  <br>
-				<%= submit_tag "Run Report", class: "btn btn-large btn-success" %>
+				<%#= submit_tag "Run Report", class: "btn btn-large btn-success" %>
+				<%= button_to_function "Run Report", "return false", :id=> "Run_Report", :class => "btn btn-large btn-success" %>
 			  </p>
 			<% end %>
 			
@@ -76,8 +76,6 @@
           </div>
         </div><!--/span-->
       </div><!--/row-->
-
-      <hr>
 
     <%= render 'layouts/footer' %>
     <%= debug(params) if Rails.env.development? %>

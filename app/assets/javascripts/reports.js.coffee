@@ -9,12 +9,12 @@ $ ->
       $("#other_person").show()
     else
       $("#other_person").hide()
-	  
+
 # $ ->
 #   $("#Load").click ->
 #    $.get "reports/build_detail_controller", person_select: $("#person_select").val()
-	
-	
+
+
 $ ->
   $("#Load").click ->
     if $("input[name=person_select]:checked").val() is "me"
@@ -26,6 +26,15 @@ $ ->
         alert "Please enter a valid Personal Identifier for the root person of the report. (example: KQZZ-N2J)"
         $("#other_person_field").focus()
         return false
-    $.get "../reports/build_detail_controller", root_person: jqroot_person, (data, status) ->
+    $.get "../reports/build_detail_ped", root_person: jqroot_person, (data, status) ->
       alert data  if status is "success"
+
+$ ->
+  $("#Run_Report").click ->
+    if $("#type").val().length==0
+      alert "Please select a report type."
+      return false
+    else
+      $(this).closest('form').submit()
+	  return false
 
