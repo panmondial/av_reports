@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130117220604) do
+ActiveRecord::Schema.define(:version => 20130117222701) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(:version => 20130117220604) do
     t.string   "queue"
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+    t.integer  "progress"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -51,10 +52,10 @@ ActiveRecord::Schema.define(:version => 20130117220604) do
     t.string   "lead_source_other"
     t.string   "password_reset_token"
     t.datetime "password_reset_sent_at"
+    t.string   "username"
     t.boolean  "verified",               :default => false
     t.string   "registration_token"
     t.datetime "registration_sent_at"
-    t.string   "username"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

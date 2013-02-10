@@ -1,59 +1,86 @@
-class BuildDetail < Struct.new(:root_person, :id)
+class BuildDetail
 
-FamilyTreeV2 = Org::Familysearch::Ws::Familytree::V2::Schema
+  def initialize(root_person, session_id)
+    @root_person = root_person
+    @session_id = session_id
+  end
+
+  def enqueue(job)
+    track_progress(1)
+  end
 
   def perform
-    
-	# 1. Connect with the FamilySearch API and pull in a 4-generation pedigree for the 
-	# specified root person (:me is default for logged-in user)
-	subdomain = Rails.env.production? ? 'sandbox' : 'sandbox'
-	
-	com = FsCommunicator.new(
-      :domain => "https://#{subdomain}.familysearch.org",
-	  :handle_throttling => true,
-	  :session => id
-    )
-	
-	my_pedigree = com.familytree_v2.pedigree root_person
+    # 1. Connect with the FamilySearch API and pull in a 4-generation pedigree for the
+    # specified root person (:me is default for logged-in user)
+    my_pedigree
+    puts "1st part done!"
 
-
-	# 2. Build basic pedigree, with no detail other than name, person identifier, gender, and parent ids
-	ped_basic = Rails.cache.read("ped_basic_cache_#{id}")
-
-	if ped_basic.nil?
-      my_pedigree.continue_ids.each_slice(2) do |ids|
-	    pedigrees = com.familytree_v2.pedigree ids
-	    pedigrees.each do |ped|
-	      my_pedigree.injest ped
-	    end
-      end
-	  ped_basic = my_pedigree
-	  Rails.cache.write("ped_basic_cache_#{id}", ped_basic, :expires_in => 4.hours, :compress => true)
-	else
-	  ped_basic
-	end
-    
+    # 2. Build basic pedigree, with no detail other than name, person identifier, gender, and parent ids
+    ped_basic
     puts "2nd part done!"
-    
-	
-	# 3. Add detail information to the pedigree skeleton by passing list of person identifiers 
-    # to FamilySearch API, and query person detail (with optional parameters)
-	full_pedigree = FamilyTreeV2::Pedigree.new
-	total_person_count = ped_basic.person_ids.length
-    progress_count = 0
 
-    persons = com.familytree_v2.person ped_basic.person_ids, :parents => 'all', :events=> 'standard', :names=> 'summary', :families=> 'summary' do |people|
-      progress_count += people.size
-      #Delayed::Job.current.update_attribute :progress, (progress_count/total_person_count)
+    # 3. Add detail information to the pedigree skeleton by passing list of person identifiers
+    # to FamilySearch API, and query person detail (with optional parameters)
+    create_full_pedigree
+    puts "Whole background job done!"
+  end
+
+  private
+
+  def track_progress(percent_complete)
+    Rails.cache.write("percent_complete_#{@session_id}", percent_complete)
+  end
+
+  def subdomain
+    @subdomain ||= Rails.env.production? ? 'sandbox' : 'sandbox'
+  end
+
+  def communicator
+    @communicator ||= FsCommunicator.new(
+      :domain => "https://#{subdomain}.familysearch.org",
+      :handle_throttling => true,
+      :session => @session_id
+    )
+  end
+
+  def my_pedigree
+    @my_pedigree ||= communicator.familytree_v2.pedigree(@root_person)
+  end
+
+  def ped_basic
+    Rails.cache.fetch("ped_basic_cache_#{@session_id}", :expires_in => 4.hours, :compress => true) do
+      my_pedigree.continue_ids.each_slice(2) do |ids|
+        communicator.familytree_v2.pedigree(ids).each do |ped|
+          my_pedigree.injest(ped)
+        end
+      end
+
+      my_pedigree
     end
-	
-	persons.each do |person|
+  end
+
+  def create_full_pedigree
+    full_pedigree = Org::Familysearch::Ws::Familytree::V2::Schema::Pedigree.new
+
+    i = 0
+    total_person_count = ped_basic.person_ids.length
+    progress_count = 0
+    percent_complete = 0
+
+    persons = communicator.familytree_v2.person(ped_basic.person_ids, :parents => 'all', :events => 'standard', :names => 'summary', :families => 'summary') do |people|
+      i += 1
+      progress_count += people.size
+      percent_complete = ((progress_count.to_f / total_person_count.to_f) * 100).to_i
+
+      puts "#{progress_count} of #{total_person_count} fetched (#{percent_complete}%)"
+      track_progress(percent_complete) if percent_complete == 100 || i % 2 == 0
+    end
+
+    persons.each do |person|
       full_pedigree << person
     end
 
-	Rails.cache.write("full_pedigree_cache_#{id}", full_pedigree, :expires_in => 4.hours, :compress => true)
-	puts "Whole background job done!"
-  end  
-  
+    Rails.cache.write("full_pedigree_cache_#{@session_id}", full_pedigree, :expires_in => 4.hours, :compress => true)
+  end
+
 end
-  

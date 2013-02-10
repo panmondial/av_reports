@@ -198,7 +198,12 @@ input, textarea, select, .uneditable-input {
 .field_with_errors {
   @extend .control-group;
   @extend .error;
- }
+}
+
+label.inline {
+  display: inline-block;
+  margin-bottom: 0;
+}
 
  /* users index */
 

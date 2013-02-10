@@ -2,7 +2,7 @@ require 'csv'
 
 class ReportsController < ApplicationController
   before_filter :signed_in_user, except: :index
-  helper_method :build_pedigree
+  helper_method :build_pedigree, :pedigree_built?
     
   def end_of_line
 	@filter_criteria = lambda { |ped| (ped.father_id.nil? || ped.mother_id.nil?) }
@@ -109,11 +109,61 @@ class ReportsController < ApplicationController
 	end
   end
 
+  def run_reports
+    if pedigree_built?
+      @type = params[:type]
+          case @type
+        when 'end_of_line' then end_of_line
+            when 'direct_line_all' then direct_line_all
+            when 'missing_birth_date' then missing_birth_date
+            when 'missing_birth_place' then missing_birth_place
+        when 'incomplete_birth_date' then incomplete_birth_date
+        when 'missing_death_date' then missing_death_date
+        when 'missing_death_place' then missing_death_place
+        when 'incomplete_death_date' then incomplete_death_date
+        else end_of_line
+      end
+    else
+      flash[:error] = 'You must load pedigree data before running reports.'
+      redirect_to reports_path
+    end
+  end
+
+  def build_detail_ped
+    begin
+      Delayed::Job.enqueue(BuildDetail.new(params[:root_person], session[:api_session_id]))
+      render :json => { :message => 'Accepted' }, :status => :accepted
+    rescue Exception => error
+      if request.format.json?
+        logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => 'Bad Request' }, :status => :bad_request
+      else
+        raise error
+      end
+    end
+  end
+
+  def progress
+    render :json => { :percent_complete => check_progress }, :status => :ok
+  end
+
+  # Helper methods
+
+  def build_pedigree
+    @pedigree = Rails.cache.read("full_pedigree_cache_#{session[:api_session_id]}")
+  end
+
+  def pedigree_built?
+    Rails.cache.exist?("full_pedigree_cache_#{session[:api_session_id]}")
+  end
+
+  private
+
   def build_csv(data)
-	pedigree = Rails.cache.read("full_pedigree_cache_#{session[:api_session_id]}")
 	@csv_array = CSV.generate do |csv|
       csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-      pedigree.persons.find_all(&@filter_criteria).each do |ped|
+      build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
         csv << [ped.id, \
           (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	        if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
@@ -130,32 +180,8 @@ class ReportsController < ApplicationController
     end 
   end
 
-  def build_pedigree
-    @pedigree = Rails.cache.read("full_pedigree_cache_#{session[:api_session_id]}")
-  end
-
-  def build_detail_ped
-	Delayed::Job.enqueue(BuildDetail.new(params[:root_person], session[:api_session_id]))
-  
-    respond_to do |format|  
-      format.html
-      format.js   { render :nothing => true }  
-    end  
-  end
-
-  def run_reports
-    @type = params[:type]
-	case @type
-      when 'end_of_line' then end_of_line
-	  when 'direct_line_all' then direct_line_all
-	  when 'missing_birth_date' then missing_birth_date
-	  when 'missing_birth_place' then missing_birth_place
-      when 'incomplete_birth_date' then incomplete_birth_date
-      when 'missing_death_date' then missing_death_date
-      when 'missing_death_place' then missing_death_place
-      when 'incomplete_death_date' then incomplete_death_date
-      else end_of_line
-    end
+  def check_progress
+    Rails.cache.read("percent_complete_#{session[:api_session_id]}") || 1
   end
   
 end
