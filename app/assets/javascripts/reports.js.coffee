@@ -14,6 +14,47 @@ $ ->
 #   $("#Load").click ->
 #    $.get "reports/build_detail_controller", person_select: $("#person_select").val()
 
+intervalID = null
+
+startProgressCheck = ->
+  showProgressBar()
+  disableProgressButton()
+  intervalID = setInterval(checkProgress, 5000)
+
+stopProgressCheck = ->
+  clearInterval(intervalID)
+
+checkProgress = ->
+  $.getJSON('/reports/progress')
+    .done((data, status) ->
+      displayProgress(data.percent_complete)
+
+      if data.percent_complete == 100
+        stopProgressCheck()
+        resetPorgressForm()
+    )
+    .fail( -> alert 'problem checking progress!' )
+
+disableProgressButton = ->
+  $('#Load').prop
+    disabled: true
+    value: 'Loading... 0%'
+
+showProgressBar = ->
+  $('#data_status').text('')
+  displayProgress(0)
+  $('#data_loaded').parent().show()
+
+displayProgress = (percent_complete) ->
+  $('#data_loaded').css('width', "#{percent_complete}%")
+  $('#Load').prop('value', "Loading... #{percent_complete}%")
+
+resetPorgressForm = ->
+  $('#Load').prop
+    disabled: false
+    value: 'Reload Data'
+
+  $('#data_status').text('Data loaded!')
 
 $ ->
   $("#Load").click ->
@@ -26,8 +67,15 @@ $ ->
         alert "Please enter a valid Personal Identifier for the root person of the report. (example: KQZZ-N2J)"
         $("#other_person_field").focus()
         return false
-    $.get "../reports/build_detail_ped", root_person: jqroot_person, (data, status) ->
-      alert data  if status is "success"
+
+    $.getJSON("../reports/build_detail_ped", root_person: jqroot_person)
+      .done((data, status) ->
+        startProgressCheck()
+      )
+      .fail((data, status) ->
+        stopProgressCheck()
+        alert 'failure!'
+      )
 
 $ ->
   $("#Run_Report").click ->
