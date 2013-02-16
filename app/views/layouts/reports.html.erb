@@ -25,45 +25,60 @@
 			<%= form_tag("/reports/run_reports", :method => "get") do %>
               <p>
 			    <b>Step 1: Select Starting Person</b>
-			  <br>
-                          <%= radio_button_tag(:person_select, :me, true, :class => "radio inline") %>&nbsp;<%= label_tag(:person_select_me, "Self", :class => "inline") %>
-                          <%= radio_button_tag(:person_select, :other, false, :class => "radio inline") %>&nbsp;<%= label_tag(:person_select_other, "Other", :class => "inline") %>
+			    <br>
+                <%= radio_button_tag(:person_select, :me, true, :class => "radio inline") %>&nbsp;Self
+	            <%= radio_button_tag(:person_select, "other", false, :class => "radio inline") %>&nbsp;Other
 			  
 			    <span id="other_person">
-			      <%= text_field_tag 'other_person_field', nil, :maxlength => 8, :class => "input-medium" %>
+			      <%= text_field_tag 'other_person_id', nil, :maxlength => 8, :class => "input-medium" %>
                 </span>
 			  </p>
 			  <br>
 			  
 			  <p>
 			    <b>Step 2: Load Data</b>
-			  <br>
-                          <% if pedigree_built? %>
-                            <div id="data_status">Data loaded!</div>
-                            <div class="progress progress-striped"><div id="data_loaded" class="bar" style="width: 100%;"></div></div>
-                            <%= button_to_function "Reload Data", "return false", :id => "Load", :class => "btn btn-small btn-info" %>
-                          <% else %>
-                            <div id="data_status"></div>
-                            <div class="hide progress progress-striped"><div id="data_loaded" class="bar" style="width: 0%;"></div></div>
-                            <%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-small btn-info" %>
-                          <% end %>
+			    <br>
+                <% if pedigree_built? %>
+                  <div class="progress progress-striped"><div id="data_loaded" class="bar" style="width: 100%;"></div></div>
+                <% else %>
+                  <div class="hide progress progress-striped"><div id="data_loaded" class="bar" style="width: 0%;"></div></div>
+                <% end %>
+				<%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-info" %>
+				<span id="btn_Clear_Data", class="inline"><%= button_to_function "Clear Data", "return false", :id => "Clear_Data", :class => "btn" %></span>
 			  </p>
-			  
-			  <hr>
-			  
+			  <p>
+			    <% if pedigree_built? %>
+                  <div id="data_detail">
+				  <table>
+				    <tr>
+					  <td colspan=2><small><b>Data loaded for:</b></small></td>
+					</tr>
+					<tr>
+					  <td><small><b>Name: </b></small></td>
+					  <td><small><div id="result_person_name"></div></small></td>
+					</tr>
+					<tr>
+					  <td><small><b>Person ID:&nbsp;&nbsp; </b></small></td>
+					  <td><small><div id="result_person_id"></div></small></td>
+					</tr>
+				  </table>
+				  </div>
+                <% end %>
+			  </p>
+              <br>			  
 			  <p>
 			    <b>Step 3: Select Report</b>
-			  <br>
+			    <br>
 			    <div class="controls styled-select">
-			      <%= select_tag :type, options_for_select([['--  Please Select  --',nil],['End-of-Line Ancestors','end_of_line'], ['Direct Line Ancestors','direct_line_all'], ['Missing Birth Date','missing_birth_date'], ['Missing Birth Place','missing_birth_place'], ['Incomplete Birth Date','incomplete_birth_date'], ['Missing Death Date','missing_death_date'], ['Missing Death Place','missing_death_place'], ['Incomplete Death Date','incomplete_death_date']]), class: "input-xlarge" %>
+			      <%= select_tag :type, options_for_select([['--  Please Select  --',nil], ['Direct Line Ancestors','direct_line_ancestors'], ['End-of-Line Ancestors','end_of_line'], ['Missing Birth Date','missing_birth_date'], ['Missing Birth Place','missing_birth_place'], ['Incomplete Birth Date','incomplete_birth_date'], ['Missing Death Date','missing_death_date'], ['Missing Death Place','missing_death_place'], ['Incomplete Death Date','incomplete_death_date']]), class: "input-xlarge" %>
 				</div>
 			  </p>
 			 			  
 			  <p>
 			    <b>Step 4: Run Report</b>
 			  <br>
-				<%#= submit_tag "Run Report", class: "btn btn-large btn-success" %>
-				<%= button_to_function "Run Report", "return false", :id=> "Run_Report", :class => "btn btn-large btn-success" %>
+				<%= button_to_function "Run Report", "return false", :id => "Run_Report", :class => "btn btn-success" %>
+				<span id="btn_Reset_Report"><%= button_to_function "Reset Report", "return false", :id => "Reset", :class => "btn" %></span>
 			  </p>
 			<% end %>
 			

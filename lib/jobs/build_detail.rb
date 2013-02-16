@@ -1,8 +1,9 @@
 class BuildDetail
 
-  def initialize(root_person, session_id)
+  def initialize(root_person, current_user_id, session_id)
     @root_person = root_person
-    @session_id = session_id
+    @current_user_id = current_user_id
+	@session_id = session_id
   end
 
   def enqueue(job)
@@ -25,10 +26,15 @@ class BuildDetail
     puts "Whole background job done!"
   end
 
+  def error(job, exception)
+    Rails.cache.write("job_errors_#{@current_user_id}", exception, :expires_in => 15.minutes)
+  end
+  
+  
   private
 
   def track_progress(percent_complete)
-    Rails.cache.write("percent_complete_#{@session_id}", percent_complete)
+    Rails.cache.write("percent_complete_#{@current_user_id}", percent_complete)
   end
 
   def subdomain
@@ -44,11 +50,11 @@ class BuildDetail
   end
 
   def my_pedigree
-    @my_pedigree ||= communicator.familytree_v2.pedigree(@root_person)
+	@my_pedigree ||= communicator.familytree_v2.pedigree(@root_person)
   end
 
   def ped_basic
-    Rails.cache.fetch("ped_basic_cache_#{@session_id}", :expires_in => 4.hours, :compress => true) do
+    Rails.cache.fetch("ped_basic_cache_#{@current_user_id}_#{@root_person}", :expires_in => 4.hours, :compress => true) do
       my_pedigree.continue_ids.each_slice(2) do |ids|
         communicator.familytree_v2.pedigree(ids).each do |ped|
           my_pedigree.injest(ped)
@@ -80,7 +86,12 @@ class BuildDetail
       full_pedigree << person
     end
 
-    Rails.cache.write("full_pedigree_cache_#{@session_id}", full_pedigree, :expires_in => 4.hours, :compress => true)
+    Rails.cache.fetch("full_pedigree_cache_#{@current_user_id}_#{@root_person}", :expires_in => 4.hours, :compress => true) do
+	  full_pedigree
+	end
+	
+	Rails.cache.write("result_root_person_name_#{@current_user_id}", full_pedigree.root.full_name, :expires_in => 4.hours)
+	Rails.cache.write("result_root_person_id_#{@current_user_id}", full_pedigree.root.id, :expires_in => 4.hours)
   end
 
 end

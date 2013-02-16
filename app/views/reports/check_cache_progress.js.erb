@@ -1,0 +1,20 @@
+if (<%= @job %> === false) {
+  $("#Load").attr("disabled", true);
+  $("#Load").val("Loading (please wait)...");
+  $("#progress_bar").show()
+} else {
+  clearTimeout(window.timeout1);
+  $("#Run_Report").attr("disabled", false);
+  $("#Load").val("Finished loading!");
+  $("input[name=person_select]").attr("disabled", true);
+  $("input[name=other_person_id]").attr("disabled", true);
+  $("#Reset").show();
+  $("#Reset").attr("disabled", false);
+  $("#progress_bar").hide();
+  alert("Your data has loaded successfully!");
+};
+
+
+
+
+
