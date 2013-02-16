@@ -7,7 +7,7 @@ class BuildDetail
   end
 
   def enqueue(job)
-    track_progress(1)
+    track_progress(0)
   end
 
   def perform

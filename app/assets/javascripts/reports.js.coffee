@@ -13,16 +13,17 @@ $ ->
   $("input[name=person_select]").change ->
     if $("input[name=person_select]:checked").val()=="other"
       $("#other_person").show()
+      $("#other_person_id").focus()
     else
       $("#other_person").hide()
+      $('input[id=person_select_me]').focus()
     
 intervalID = null
 
 recallFields = ->
   $.getJSON('/reports/orig_params')
     .done((data, status) ->
-      $('input[name=person_select]').focus()
-      if data.percent_complete < 100
+      if data.percent_complete < 100 && data.percent_complete > 0
         setPageValue(data.jperson_select, data.jother_person_id, data.jreport_type, "", "")
         startProgressCheck(data.percent_complete)
         setAttrButtons(true, true, true, true, true, false)
@@ -30,19 +31,19 @@ recallFields = ->
         setPageValue(data.jperson_select, data.jother_person_id, data.jreport_type, data.jresult_person_name, data.jresult_person_id)
         setAttrButtons(true, false, false, false, false, false)
         $('#data_loaded').css('width', "#{data.percent_complete}%")
-        stopProgressCheck()
+        stopProgressCheck("Finished")
       else
         setPageValue("me", "", "", "", "")
         setAttrButtons(false, true, true, true, true, true)
         setAttrForm(false, false, false)
-        setValueLoadButton("Load")		
+        stopProgressCheck("Load")
     )
     .fail( ->
       setResultsText("", "", true)
       setAttrForm(true, true, true)
       setAttrButtons(true, true, true, true, true, true)
       setValuesForm("me", "", "")
-      setValueLoadButton("Load")
+      stopProgressCheck("Load")
     )
 
 checkProgress = ->
@@ -55,17 +56,15 @@ checkProgress = ->
           alert "Your FamilySearch session has expired. Please click 'sign out', then 'sign in' to refresh your FamilySearch session."
         else
           alert "The following error has occurred: \n \n" + data.jerror + "\n \n Please verify your Internet connection, logout and try running the report again."
-          stopProgressCheck()
+        stopProgressCheck("Load")
         setAttrForm(false, false, false)
         setAttrButtons(false, false, false, true, true, true)
         setValuesForm(person_select_val, other_person_id, report_type)
-        setValueLoadButton("Load")
         $('#data_loaded').parent().hide()
       else
         displayProgress(data.percent_complete)
-        
         if data.percent_complete == 100
-          stopProgressCheck()
+          stopProgressCheck("Finished")
           setResultsText(data.jresult_person_name, data.jresult_person_id, false)
           setAttrButtons(true, false, false, false, false, false)
           setAttrForm(true, true, false)
@@ -95,9 +94,9 @@ startProgressCheck = (bar_value) ->
   setValueLoadButton("Loading...")
   intervalID = setInterval(checkProgress, 2500)  
 
-stopProgressCheck = ->
+stopProgressCheck = (Load_btn_val) ->
   clearInterval(intervalID)
-  setValueLoadButton("Finished")
+  setValueLoadButton(Load_btn_val)
 	  
 setPageValue = (jperson_select, jother_person_id, jreport_type, jresult_person_name, jresult_person_id) ->
   if jperson_select == "other"
@@ -146,7 +145,7 @@ setOtherPersonHide = (hidden_state) ->
 setAttrButtons = (Load_disabled, Clear_Data_disabled, Clear_Data_hidden, Run_Report_disabled, Reset_disabled, Reset_hidden) ->
   $('#Load').prop(disabled: Load_disabled)
   $("#Clear_Data").prop(disabled: Clear_Data_disabled)
-  $("#btn_Clear_Data").prop(hidden: Clear_Data_hidden)
+  $("#Clear_Data").toggle(not(Clear_Data_hidden))
   $('#Run_Report').prop(disabled: Run_Report_disabled)
   $("#Reset").prop(disabled: Reset_disabled)
   $('#Reset').toggle(not(Reset_hidden))
@@ -189,8 +188,8 @@ $ ->
     setAttrButtons(false, true, true, true, true, true)
     setValuesForm("me", "", "")
     setValueLoadButton("Load")
-    $('input[name=person_select]').focus()
-	$('#data_loaded').parent().hide()
+    $('input[id=person_select_me]').focus()
+    $('#data_loaded').parent().hide()
 	
 $ ->
   $("#Clear_Data").click ->
@@ -202,7 +201,7 @@ $ ->
         setValuesForm("me", "", "")
         setValueLoadButton("Load")
         $('#data_loaded').parent().hide()
-        $('input[name=person_select]').focus()
+        $('input[id=person_select_me]').focus()
         alert "Your data has been cleared. Please select a new starting person and load data."
       )
       .fail((data, status) ->

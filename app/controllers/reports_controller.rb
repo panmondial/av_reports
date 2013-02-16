@@ -196,12 +196,12 @@ class ReportsController < ApplicationController
   def clear_cache
     @root_person =  Rails.cache.read("root_person_cache_#{current_user.id}")
 	
-	Rails.cache.delete("full_pedigree_cache_#{@current_user.id}_#{@root_person}")
-    Rails.cache.delete("ped_basic_cache_#{@current_user.id}_#{@root_person}")
+	Rails.cache.delete("full_pedigree_cache_#{current_user.id}_#{@root_person}")
+    Rails.cache.delete("ped_basic_cache_#{current_user.id}_#{@root_person}")
 
-    Rails.cache.delete("job_errors_#{@current_user.id}")
+    Rails.cache.delete("job_errors_#{current_user.id}")
     Rails.cache.delete("other_person_id_cache_#{current_user.id}")
-    Rails.cache.delete("percent_complete_#{@current_user.id}")
+    Rails.cache.delete("percent_complete_#{current_user.id}")
     Rails.cache.delete("person_select_cache_#{current_user.id}")
     Rails.cache.delete("report_type_cache_#{current_user.id}")
     Rails.cache.delete("result_root_person_id_#{@current_user.id}")
@@ -256,7 +256,7 @@ class ReportsController < ApplicationController
   end
 
   def check_progress
-    Rails.cache.read("percent_complete_#{current_user.id}") || 1
+    Rails.cache.read("percent_complete_#{current_user.id}") || 0
   end
   
   def background_error

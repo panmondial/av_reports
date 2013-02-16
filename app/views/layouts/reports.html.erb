@@ -44,7 +44,7 @@
                   <div class="hide progress progress-striped"><div id="data_loaded" class="bar" style="width: 0%;"></div></div>
                 <% end %>
 				<%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-info" %>
-				<span id="btn_Clear_Data", class="inline"><%= button_to_function "Clear Data", "return false", :id => "Clear_Data", :class => "btn" %></span>
+				<%= button_to_function "Clear Data", "return false", :id => "Clear_Data", :class => "btn", :style => "display: none" %>
 			  </p>
 			  <p>
 			    <% if pedigree_built? %>
@@ -78,7 +78,7 @@
 			    <b>Step 4: Run Report</b>
 			  <br>
 				<%= button_to_function "Run Report", "return false", :id => "Run_Report", :class => "btn btn-success" %>
-				<span id="btn_Reset_Report"><%= button_to_function "Reset Report", "return false", :id => "Reset", :class => "btn" %></span>
+				<%= button_to_function "Reset Report", "return false", :id => "Reset", :class => "btn", :style => "display: none" %>
 			  </p>
 			<% end %>
 			
