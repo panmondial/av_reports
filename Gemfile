@@ -6,7 +6,7 @@ gem 'bcrypt-ruby', '3.0.1'
 gem 'json'
 gem 'ruby-fs-stack'
 gem 'omniauth-familysearch-identity', '~> 1.0'
-gem 'newrelic_rpm'
+gem "newrelic_rpm", "~> 3.5.5.38"
 gem 'thin'
 gem 'rack', '1.4.1'
 gem 'delayed_job_active_record'

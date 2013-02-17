@@ -201,7 +201,7 @@ DEPENDENCIES
   factory_girl_rails (= 4.1.0)
   jquery-rails
   json
-  newrelic_rpm
+  newrelic_rpm (~> 3.5.5.38)
   omniauth-familysearch-identity (~> 1.0)
   pg (= 0.12.2)
   rack (= 1.4.1)
