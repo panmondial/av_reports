@@ -4,7 +4,11 @@
 
 <p><%= @report_description %></p>
 
-<p><%= link_to "Download CSV", :controller => :reports, :action => params[:type].to_s, :format => "csv" %></p>
+<p>
+  Export as: &nbsp;<%= link_to "xls", :controller => :reports, :action => params[:type].to_s, :format => "xls" %> &nbsp; | 
+  &nbsp;<%= link_to "csv", :controller => :reports, :action => params[:type].to_s, :format => "csv" %> 
+</p>
+
 <table class="table table-bordered">
   <tr>
     <th>Line</th>
@@ -25,9 +29,11 @@
 	<tr>
 	  <td><%= count %></td>
       <td>
-	    <a href="https://sandbox.familysearch.org/en/action/hourglassiconicview?bookid=p.<%= ped.id %>&focus=p.<%= ped.id %>&svfs=1&sv=1">
-		  <%= ped.id %>
-		</a>
+	    <!--<a href="https://sandbox.familysearch.org/tree/#view=ancestor&person=<%= ped.id %>&access_token=<%= session[:api_session_id] %>">-->
+		  <%#= ped.id %>
+		<!--</a>--> 
+		<%= link_to ped.id, "https://sandbox.familysearch.org/tree/#view=ancestor&person=#{ ped.id }&access_token=#{ session[:api_session_id]}", :target => "_blank" %>
+		
 	  </td>
 	  <td>
 	    <%= ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \

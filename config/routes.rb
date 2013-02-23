@@ -12,13 +12,13 @@ AvReports::Application.routes.draw do
 	resources :sessions, only: [:new, :create, :destroy]
 	resources :password_resets
 	resources :registration_confirmation
-
+	
 	resources :reports do
 	  collection do
 	    get :launch_build_file, :end_of_line, :direct_line_ancestors, :missing_birth_date,  \
 		:missing_birth_place, :incomplete_birth_date, :incomplete_death_date, \
 		:missing_death_date, :missing_death_place, :incomplete_death_date, \
-		:run_reports, :build_detail_ped, :progress, :orig_params, :clear_cache
+		:build_detail_ped, :progress, :orig_params, :clear_cache, :reload_data, :run_reports
 	  end
 	end
 	
@@ -35,6 +35,11 @@ AvReports::Application.routes.draw do
 	match '/terms_of_use', to: 'static_pages#terms_of_use'
 	match '/privacy', to: 'static_pages#privacy'
 	match '/instructions', to: 'static_pages#signup_instructions'
+	
+	
+	
+	
+	
 	
 	
   # The priority is based upon order of creation:

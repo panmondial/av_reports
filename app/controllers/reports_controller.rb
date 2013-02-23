@@ -1,4 +1,5 @@
 require 'csv'
+require 'iconv'
 
 class ReportsController < ApplicationController
   before_filter :signed_in_user, except: :index
@@ -12,9 +13,14 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-		build_csv(@pedigree)
-        send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
       end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
+	  end
 	end
   end
 
@@ -25,8 +31,13 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-		build_csv(@pedigree)
-		send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
@@ -38,8 +49,13 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-        build_csv(@pedigree)
-	    send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
@@ -52,8 +68,13 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-		build_csv(@pedigree)
-		send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
@@ -65,8 +86,13 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-		build_csv(@pedigree)
-		send_data @csv_string, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
@@ -78,8 +104,13 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-		build_csv(@pedigree)
-        send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
@@ -91,9 +122,14 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-	    build_csv(@pedigree)
-        send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
       end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
+	  end
 	end
   end
 	
@@ -104,17 +140,36 @@ class ReportsController < ApplicationController
 	respond_to do |format|
 	  format.html {render '_report_detail', :layouts => 'reports', :locals => {:@filter_criteria => @filter_criteria } }
 	  format.csv do
-	    build_csv(@pedigree)
-		send_data @csv_array, filename: "#{__method__}.csv"
+		build_csv
+		send_data Iconv.conv('iso-8859-1//IGNORE', 'utf-8', @csv_array), \
+		:type => 'text/csv; charset=iso-8859-1; header=present', filename: "#{__method__}.csv"
+      end
+	  format.xls do
+	    build_excel("#{__method__}")
+		send_data @spreadsheet.string, filename: "#{__method__}.xls", :type =>  "application/vnd.ms-excel"
 	  end
 	end
   end
 
+  
+  
+# Data Generation Methods 
+  
   def run_reports
-    if pedigree_built?
+	begin
 	  @type = params[:type]
+	  @root_person = params[:root_person]
+	  Rails.cache.write("root_person_cache_#{current_user.id}", @root_person, :expires_in => 4.hours)
 	  Rails.cache.write("report_type_cache_#{current_user.id}", @type, :expires_in => 4.hours)
-        case @type
+	
+	  get_person = communicator.familytree_v2.person(@root_person)
+	  
+	  Rails.cache.write("result_root_person_name_#{@current_user.id}_#{@root_person}", get_person.full_name, :expires_in => 4.hours)
+	  Rails.cache.write("result_root_person_id_#{@current_user.id}_#{@root_person}", get_person.id, :expires_in => 4.hours)
+
+	
+      if pedigree_built?
+	    case @type
           when 'direct_line_ancestors' then direct_line_ancestors
           when 'end_of_line' then end_of_line
           when 'missing_birth_date' then missing_birth_date
@@ -125,17 +180,26 @@ class ReportsController < ApplicationController
           when 'incomplete_death_date' then incomplete_death_date
           else end_of_line
         end
-    else
-      flash[:error] = "You must load pedigree data before running reports. Please select starting person, then click the 'Load' button."
-      redirect_to reports_path
+      else
+	    build_detail_ped
+	    flash[:alert] = "Your report data is loading. Please wait until loading is complete, then select a report."
+        redirect_to reports_path
+      end
+	rescue RubyFsStack::NotFound => error
+      flash[:error] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
+      render :index
+    rescue Exception => error
+      flash[:error] = 'Invalid report parameters. Please try again.'
+      render :index
     end
   end
-
+	
   def build_detail_ped
-    begin
-	  Rails.cache.delete("job_errors_#{@current_user.id}")
-	  	  
-	  r_person = params[:root_person]
+	begin
+	  r_person = params[:root_person] || @root_person
+	  Rails.cache.delete("job_errors_#{@current_user_id}_#{r_person}")
+	  communicator.familytree_v2.person(r_person)
+	  
 	  if r_person == "me"
 		person_select = "me"
 		other_person_id = nil
@@ -148,64 +212,46 @@ class ReportsController < ApplicationController
 	  Rails.cache.write("person_select_cache_#{current_user.id}", person_select, :expires_in => 4.hours)
 	  Rails.cache.write("other_person_id_cache_#{current_user.id}", other_person_id, :expires_in => 4.hours)
 	  
-	  Delayed::Job.enqueue(BuildDetail.new(r_person, current_user.id, session[:api_session_id]))
-      render :json => { :message => 'Accepted' }, :status => :accepted
-    rescue Exception => error
+	  if !pedigree_built?
+	    Delayed::Job.enqueue(BuildDetail.new(r_person, current_user.id, session[:api_session_id], false))
+      end
+	  
+	  if request.format.json?
+	    render :json => { :message => 'Accepted' }, :status => :accepted
+	  end
+	
+	rescue RubyFsStack::NotFound => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again." }, :status => :bad_request
+	  else
+	    flash[:alert] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
+        redirect_to reports_path
+	  end
+	rescue Exception => error
       if request.format.json?
         logger.error error.message
         logger.error error.backtrace.join("\n")
-        render :json => { :message => 'Bad Request' }, :status => :bad_request
+        render :json => { :message => 'There was a problem while trying to load your data. Please check your Internet connection and try again.' }, :status => :bad_request
       else
-        raise error
+        flash[:alert] = 'There was a problem while trying to load your data. Please check your Internet connection and try again.'
+        render reports_path
       end
     end
   end
 
-  def progress
-    # begin
-	  render :json => { :percent_complete => check_progress, :jresult_person_name => result_root_person_name, \
-	    :jresult_person_id => result_root_person_id, :jerror => background_error, :j_root_person => orig_root_person }, \
-		:status => :ok
-	
-	# rescue Exception => error
-	  # if request.format.json?
-        # msg = error.message
-		# logger.error error.message
-        # logger.error error.backtrace.join("\n")
-        # render :json => { :message => 'Bad Request' }, :status => :bad_request
-      # else
-        # raise error
-      # end
-	# end
-	
-  end
-
-  def orig_params
-	respond_to do |format|
-      format.html { redirect_to reports_path, :flash => { :success => "Successfully logged in!" } }
-      format.json{
-        if signed_in?
-	      render :json => { :jperson_select => orig_person_select, :jother_person_id => orig_other_person_id, \
-		  :jreport_type => orig_report_type, :jresult_person_name => result_root_person_name, \
-		  :jresult_person_id => result_root_person_id, :percent_complete => check_progress }, :status => :ok
-	    end
-      }
-    end	
-  end
-
   def clear_cache
     @root_person =  Rails.cache.read("root_person_cache_#{current_user.id}")
-	
 	Rails.cache.delete("full_pedigree_cache_#{current_user.id}_#{@root_person}")
     Rails.cache.delete("ped_basic_cache_#{current_user.id}_#{@root_person}")
-
-    Rails.cache.delete("job_errors_#{current_user.id}")
+    Rails.cache.delete("job_errors_#{current_user.id}_#{@root_person}")
     Rails.cache.delete("other_person_id_cache_#{current_user.id}")
-    Rails.cache.delete("percent_complete_#{current_user.id}")
+    Rails.cache.delete("percent_complete_#{current_user.id}_#{@root_person}")
     Rails.cache.delete("person_select_cache_#{current_user.id}")
     Rails.cache.delete("report_type_cache_#{current_user.id}")
-    Rails.cache.delete("result_root_person_id_#{@current_user.id}")
-    Rails.cache.delete("result_root_person_name_#{@current_user.id}")
+    Rails.cache.delete("result_root_person_id_#{current_user.id}_#{@root_person}")
+    Rails.cache.delete("result_root_person_name_#{current_user.id}_#{@root_person}")
     Rails.cache.delete("root_person_cache_#{current_user.id}")
 	
 	respond_to do |format|
@@ -216,6 +262,37 @@ class ReportsController < ApplicationController
     end	
   end
 
+  def reload_data
+    begin
+	  reload_person = params[:root_person]
+	  
+	  Rails.cache.delete("job_errors_#{@current_user.id}_#{reload_person}")
+      Rails.cache.delete("percent_complete_#{@current_user.id}_#{reload_person}")
+      Rails.cache.delete("ped_basic_cache_#{@current_user.id}_#{reload_person}")
+      Rails.cache.delete("full_pedigree_cache_#{@current_user.id}_#{reload_person}")
+      Rails.cache.delete("result_root_person_name_#{@current_user.id}_#{reload_person}")
+      Rails.cache.delete("result_root_person_id_#{@current_user.id}_#{reload_person}")	  
+	  
+	  Delayed::Job.enqueue(BuildDetail.new(reload_person, current_user.id, session[:api_session_id], true))
+	
+	  if request.format.json?
+	    render :json => { :message => 'Accepted' }, :status => :accepted
+	  end
+	  
+	rescue Exception => error
+      if request.format.json?
+        logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => 'There was a problem while trying to load your data. Please check your Internet connection and try again.' }, :status => :bad_request
+      else
+        flash[:alert] = 'There was a problem while trying to load your data. Please check your Internet connection and try again.'
+        render reports_path
+      end
+    end  
+	  
+  end 
+  
+  
   # Helper methods
 
   def build_pedigree
@@ -231,22 +308,45 @@ class ReportsController < ApplicationController
 	end
   end
   
+  def progress
+    render :json => { :percent_complete => check_progress, :jerror => background_error }, :status => :ok
+  end
+  
+  def orig_params
+	orig_person_select = Rails.cache.read("person_select_cache_#{current_user.id}") || nil #if Rails.cache.exist?("person_select_cache_#{current_user.id}")
+	orig_other_person_id = Rails.cache.read("other_person_id_cache_#{current_user.id}") || nil #if Rails.cache.exist?("other_person_id_cache_#{current_user.id}")
+	orig_report_type = Rails.cache.read("report_type_cache_#{current_user.id}") || nil #if Rails.cache.exist?("report_type_cache_#{current_user.id}")
+    orig_root_person = Rails.cache.read("root_person_cache_#{current_user.id}") || nil #if Rails.cache.exist?("root_person_cache_#{current_user.id}")
+
+	respond_to do |format|
+      format.html { redirect_to reports_path, :flash => { :success => "Successfully logged in!" } }
+      format.json{
+        if signed_in?
+	      render :json => { :jperson_select => orig_person_select, :jother_person_id => orig_other_person_id, \
+		  :j_root_person => orig_root_person, :jreport_type => orig_report_type, \
+		  :jresult_person_name => result_root_person_name, :jresult_person_id => result_root_person_id, \
+		  :percent_complete => check_progress, :jpedigree_built => pedigree_built? }, :status => :ok
+	    end
+      }
+    end	
+  end
 
   
-  private
 
-  def build_csv(data)
+  def build_csv
+	@root_person = Rails.cache.read("root_person_cache_#{current_user.id}")
+	pedigree = Rails.cache.read("full_pedigree_cache_#{current_user.id}_#{@root_person}")
 	@csv_array = CSV.generate do |csv|
       csv << ['FamilySearch ID', 'First Name', 'Last Name', 'Gender', 'Birth Date', 'Birth Place', 'Death Date', 'Death Place']
-      build_pedigree.persons.find_all(&@filter_criteria).each do |ped|
+      pedigree.persons.find_all(&@filter_criteria).each do |ped|
         csv << [ped.id, \
           (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect {|fn| fn.value.to_s}.join(" ") \
 	        if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
-	          && ped.assertions.names[0].value.forms[0].pieces[0]), \
+	        && ped.assertions.names[0].value.forms[0].pieces[0]), \
   	      (ped.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Family"}.collect {|fn| fn.value.to_s}.join(" ") \
 	        if ped.assertions && ped.assertions.names && ped.assertions.names[0].value && ped.assertions.names[0].value.forms[0] \
-	          && ped.assertions.names[0].value.forms[0].pieces[0]), \
-		  ped.gender, \
+	        && ped.assertions.names[0].value.forms[0].pieces[0]), \
+          ped.gender, \
 		  (ped.birth.date.normalized if ped.birth && ped.birth.date && ped.birth.date.normalized), \
 		  (ped.birth.place.normalized.value if ped.birth && ped.birth.place && ped.birth.place.normalized && ped.birth.place.normalized.value), \
 		  (ped.death.date.normalized if ped.death && ped.death.date && ped.death.date.normalized), \
@@ -254,50 +354,97 @@ class ReportsController < ApplicationController
       end
     end 
   end
+  
+  def build_excel(method_name)
+    book=Spreadsheet::Workbook.new
+	  sheet1=book.create_worksheet :name=> method_name
+	  sheet1[0,0]="FamilySearch ID"
+	  sheet1[0,1]="First Name"
+	  sheet1[0,2]="Last Name"
+	  sheet1[0,3]="Gender"
+	  sheet1[0,4]="Birth Date"
+	  sheet1[0,5]="Birth Place"
+	  sheet1[0,6]="Death Date"
+	  sheet1[0,7]="Death Place"
+	  sheet1.row(0).height = 18
+	  format = Spreadsheet::Format.new :color => :blue, :weight => :bold, :size => 12
+	  sheet1.row(0).default_format = format
+	  sheet1.column(0).width=20
+	  sheet1.column(1).width=25
+	  sheet1.column(2).width=25
+	  sheet1.column(3).width=10
+	  sheet1.column(4).width=20
+	  sheet1.column(5).width=50
+	  sheet1.column(6).width=20
+	  sheet1.column(7).width=50
 
+      nextrow = 1
+
+	  @root_person = Rails.cache.read("root_person_cache_#{current_user.id}")
+	  pedigree = Rails.cache.read("full_pedigree_cache_#{current_user.id}_#{@root_person}")
+	  
+      pedigree.persons.each do |pedxls|
+	    next if (pedxls.full_name.nil?) or (pedxls.birth && pedxls.birth.date)
+#		  sheet1[nextrow,0]=Spreadsheet::Link.new "https://sandbox.familysearch.org/en/action/hourglassiconicview?bookid=p." + pedxls.id + "&focus=p." + pedxls.id + "&svfs=1&sv=1"+ pedxls.id + "&focus=p." + pedxls.id + "&svfs=1&sv=1" + "?access_token=" + session[:api_session_id], pedxls.id
+		  sheet1[nextrow,0]=Spreadsheet::Link.new "https://sandbox.familysearch.org/tree/#view=ancestor&person=" + pedxls.id + "?access_token=" + session[:api_session_id], pedxls.id
+		  sheet1[nextrow,1]=pedxls.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Given"}.collect \
+		    {|fn| fn.value.to_s}.join(" ") if pedxls.assertions && pedxls.assertions.names && pedxls.assertions.names[0].value \
+			&& pedxls.assertions.names[0].value.forms[0] && pedxls.assertions.names[0].value.forms[0].pieces[0]
+		  sheet1[nextrow,2]=((pedxls.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Family"}.collect \
+		    {|fn| fn.value.to_s}.join(" ") if pedxls.assertions && pedxls.assertions.names && pedxls.assertions.names[0].value \
+			&& pedxls.assertions.names[0].value.forms[0] && pedxls.assertions.names[0].value.forms[0].pieces[0]) + " " \
+			  + (pedxls.assertions.names[0].value.forms[0].pieces.select {|fn| fn.type=="Suffix"}.collect \
+			    {|fn| fn.value.to_s}.join(" ") if pedxls.assertions && pedxls.assertions.names && pedxls.assertions.names[0].value \
+			    && pedxls.assertions.names[0].value.forms[0] && pedxls.assertions.names[0].value.forms[0].pieces[0])).strip
+		  sheet1[nextrow,3]=pedxls.gender
+		  sheet1[nextrow,4]=pedxls.birth.date.normalized if pedxls.birth && pedxls.birth.date && pedxls.birth.date.normalized
+		  sheet1[nextrow,5]=pedxls.birth.place.normalized.value if pedxls.birth && pedxls.birth.place \
+			&& pedxls.birth.place.normalized && pedxls.birth.place.normalized.value
+		  sheet1[nextrow,6]=pedxls.death.date.normalized if pedxls.death && pedxls.death.date && pedxls.death.date.normalized	
+		  sheet1[nextrow,7]=pedxls.death.place.normalized.value if pedxls.death && pedxls.death.place \
+			&& pedxls.death.place.normalized && pedxls.death.place.normalized.value
+          nextrow += 1
+		  
+		  @spreadsheet = StringIO.new
+		  book.write @spreadsheet	  
+      end
+    end
+
+
+	
+  
+  private
+  
   def check_progress
-    Rails.cache.read("percent_complete_#{current_user.id}") || 0
+    @root_person = Rails.cache.read("root_person_cache_#{current_user.id}")
+	Rails.cache.read("percent_complete_#{current_user.id}_#{@root_person}")
   end
   
   def background_error
-    if Rails.cache.exist?("job_errors_#{current_user.id}")
-	  Rails.cache.read("job_errors_#{current_user.id}").to_s
-    end
-  end
-  
-  def orig_person_select
-	if Rails.cache.exist?("person_select_cache_#{current_user.id}")
-	  Rails.cache.read("person_select_cache_#{current_user.id}")
-	end
-  end
-  
-  def orig_other_person_id
-	if Rails.cache.exist?("other_person_id_cache_#{current_user.id}")
-	  Rails.cache.read("other_person_id_cache_#{current_user.id}")
-	end
-  end
-  
-  def orig_report_type
-    if Rails.cache.exist?("report_type_cache_#{current_user.id}")
-	  Rails.cache.read("report_type_cache_#{current_user.id}")
+    if Rails.cache.exist?("job_errors_#{@current_user.id}_#{@root_person}")
+	  Rails.cache.read("job_errors_#{current_user.id}_#{@root_person}").to_s
     end
   end
   
   def result_root_person_name
-    if Rails.cache.exist?("result_root_person_name_#{@current_user.id}")
-      Rails.cache.read("result_root_person_name_#{@current_user.id}")
+    if signed_in?
+	  @root_person = Rails.cache.read("root_person_cache_#{current_user.id}")
+	  if Rails.cache.exist?("result_root_person_name_#{current_user.id}_#{@root_person}")
+        Rails.cache.read("result_root_person_name_#{current_user.id}_#{@root_person}")
+	  end
+	else
+	  false
 	end
   end
-  
+    
   def result_root_person_id
-    if Rails.cache.exist?("result_root_person_id_#{@current_user.id}")
-      Rails.cache.read("result_root_person_id_#{@current_user.id}")
-	end
-  end
-  
-  def orig_root_person
-    if Rails.cache.exist?("root_person_cache_#{current_user.id}")
-	  Rails.cache.read("root_person_cache_#{current_user.id}")
+    if signed_in?
+	  @root_person = Rails.cache.read("root_person_cache_#{current_user.id}")
+	  if Rails.cache.exist?("result_root_person_id_#{current_user.id}_#{@root_person}")
+        Rails.cache.read("result_root_person_id_#{current_user.id}_#{@root_person}")
+	  end
+	else
+	  false
 	end
   end
   
@@ -305,6 +452,18 @@ class ReportsController < ApplicationController
 	unless signed_in?
 	  flash[:error] = "Please sign in to use reports!"
 	end
+  end
+  
+  def subdomain
+    @subdomain ||= Rails.env.production? ? 'sandbox' : 'sandbox'
+  end
+
+  def communicator
+	@communicator ||= FsCommunicator.new(
+      :domain => "https://#{subdomain}.familysearch.org",
+      :handle_throttling => true,
+      :session => session[:api_session_id]
+    )
   end
   
 end

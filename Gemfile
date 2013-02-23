@@ -11,6 +11,7 @@ gem 'thin'
 gem 'rack', '1.4.1'
 gem 'delayed_job_active_record'
 gem 'dalli'
+gem 'spreadsheet'
 
 group :development, :test do
   gem 'sqlite3', '1.3.5'

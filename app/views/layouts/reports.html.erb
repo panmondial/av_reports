@@ -8,6 +8,7 @@
 	<meta name="author" content="">
 	<%= stylesheet_link_tag    "application", :media => "all" %>
 	<%= javascript_include_tag "application" %>
+	<%= javascript_include_tag params[:controller] %>
 	<%= csrf_meta_tags %>
 	<%= render 'layouts/shim' %>
   </head>
@@ -20,14 +21,20 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-            <h4><%= link_to "Reports Home", reports_path %></h4> </br>
-			
+            <h4><%= link_to "Reports Home", reports_path %></h4>			
+			<%= modal_html = capture do %>
+              <%= link_to('Instructions', "#myRIModal", :"data-toggle" => "modal", :class => "btn btn-warning btn-small inline") %>
+            <% end %>
+			<br>
+			<br>
+		
 			<%= form_tag("/reports/run_reports", :method => "get") do %>
               <p>
 			    <b>Step 1: Select Starting Person</b>
 			    <br>
                 <%= radio_button_tag(:person_select, :me, true, :class => "radio inline") %>&nbsp;Self
 	            <%= radio_button_tag(:person_select, "other", false, :class => "radio inline") %>&nbsp;Other
+				<%= hidden_field_tag "root_person" %>
 			  
 			    <span id="other_person">
 			      <%= text_field_tag 'other_person_id', nil, :maxlength => 8, :class => "input-medium" %>
@@ -36,19 +43,24 @@
 			  <br>
 			  
 			  <p>
-			    <b>Step 2: Load Data</b>
+			    <b>Step 2: Load Data</b> &nbsp; &nbsp; &nbsp; 
+				
+				<% if Rails.env.development? %>
+				  <small><small><small><small><%= link_to_function "Clear Data", "return false", :id => "Clear_Data", :class => "align-right", :style => "display: none" %></small></small></small></small>
+				<% end %>
+				
+				<small><%= link_to_function "Reload", "return false", :id => "Reload_Data", :class => "align-right" %></small>
 			    <br>
                 <% if pedigree_built? %>
                   <div class="progress progress-striped"><div id="data_loaded" class="bar" style="width: 100%;"></div></div>
                 <% else %>
                   <div class="hide progress progress-striped"><div id="data_loaded" class="bar" style="width: 0%;"></div></div>
                 <% end %>
-				<%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-info" %>
-				<%= button_to_function "Clear Data", "return false", :id => "Clear_Data", :class => "btn", :style => "display: none" %>
+				<%= button_to_function "Load", "return false", :id => "Load", :class => "btn btn-info btn-block" %>				
+				
 			  </p>
 			  <p>
-			    <% if pedigree_built? %>
-                  <div id="data_detail">
+                <div id="data_detail">
 				  <table>
 				    <tr>
 					  <td colspan=2><small><b>Data loaded for:</b></small></td>
@@ -63,7 +75,6 @@
 					</tr>
 				  </table>
 				  </div>
-                <% end %>
 			  </p>
               <br>			  
 			  <p>
@@ -77,11 +88,12 @@
 			  <p>
 			    <b>Step 4: Run Report</b>
 			  <br>
-				<%= button_to_function "Run Report", "return false", :id => "Run_Report", :class => "btn btn-success" %>
-				<%= button_to_function "Reset Report", "return false", :id => "Reset", :class => "btn", :style => "display: none" %>
+				<%= button_to_function "Run Report", "return false", :id => "Run_Report", :class => "btn btn-success btn-block" %>
+				<%= button_to_function "Reset Report", "return false", :id => "Reset", :class => "btn btn-block", :style => "display: none" %>
 			  </p>
 			<% end %>
 			
+			<%= render :partial => 'reports/modal_report_instructions' %>
 			
           </div><!--/.well -->
         </div><!--/span-->
@@ -97,6 +109,8 @@
 
     <%= render 'layouts/footer' %>
     <%= debug(params) if Rails.env.development? %>
+	
+	
 
     </div><!--/.fluid-container-->
 	

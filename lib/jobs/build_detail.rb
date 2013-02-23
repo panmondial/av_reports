@@ -1,9 +1,10 @@
 class BuildDetail
 
-  def initialize(root_person, current_user_id, session_id)
+  def initialize(root_person, current_user_id, session_id, cache_refresh)
     @root_person = root_person
     @current_user_id = current_user_id
 	@session_id = session_id
+	@cache_refresh = cache_refresh
   end
 
   def enqueue(job)
@@ -27,14 +28,14 @@ class BuildDetail
   end
 
   def error(job, exception)
-    Rails.cache.write("job_errors_#{@current_user_id}", exception, :expires_in => 15.minutes)
+    Rails.cache.write("job_errors_#{@current_user_id}_#{@root_person}", exception, :expires_in => 15.minutes)
   end
   
   
   private
 
   def track_progress(percent_complete)
-    Rails.cache.write("percent_complete_#{@current_user_id}", percent_complete)
+    Rails.cache.write("percent_complete_#{@current_user_id}_#{@root_person}", percent_complete)
   end
 
   def subdomain
@@ -67,31 +68,37 @@ class BuildDetail
 
   def create_full_pedigree
     full_pedigree = Org::Familysearch::Ws::Familytree::V2::Schema::Pedigree.new
+    
+	if !Rails.cache.exist?("full_pedigree_cache_#{@current_user_id}_#{@root_person}") || @cache_refresh == true
+      i = 0
+      total_person_count = ped_basic.person_ids.length
+      progress_count = 0
+      percent_complete = 0
 
-    i = 0
-    total_person_count = ped_basic.person_ids.length
-    progress_count = 0
-    percent_complete = 0
+      persons = communicator.familytree_v2.person(ped_basic.person_ids, :parents => 'all', :events => 'standard', :names => 'summary', :families => 'summary') do |people|
+        i += 1
+        progress_count += people.size
+        percent_complete = ((progress_count.to_f / total_person_count.to_f) * 100).to_i
 
-    persons = communicator.familytree_v2.person(ped_basic.person_ids, :parents => 'all', :events => 'standard', :names => 'summary', :families => 'summary') do |people|
-      i += 1
-      progress_count += people.size
-      percent_complete = ((progress_count.to_f / total_person_count.to_f) * 100).to_i
+        puts "#{progress_count} of #{total_person_count} fetched (#{percent_complete}%)"
+        track_progress(percent_complete) if percent_complete == 100 || i % 2 == 0
+      end
 
-      puts "#{progress_count} of #{total_person_count} fetched (#{percent_complete}%)"
-      track_progress(percent_complete) if percent_complete == 100 || i % 2 == 0
-    end
+      persons.each do |person|
+        full_pedigree << person
+      end
 
-    persons.each do |person|
-      full_pedigree << person
-    end
-
-    Rails.cache.fetch("full_pedigree_cache_#{@current_user_id}_#{@root_person}", :expires_in => 4.hours, :compress => true) do
-	  full_pedigree
-	end
+      Rails.cache.fetch("full_pedigree_cache_#{@current_user_id}_#{@root_person}", :expires_in => 4.hours, :compress => true) do
+	    full_pedigree
+	  end
 	
-	Rails.cache.write("result_root_person_name_#{@current_user_id}", full_pedigree.root.full_name, :expires_in => 4.hours)
-	Rails.cache.write("result_root_person_id_#{@current_user_id}", full_pedigree.root.id, :expires_in => 4.hours)
-  end
+	  Rails.cache.write("result_root_person_name_#{@current_user_id}_#{@root_person}", full_pedigree.root.full_name, :expires_in => 4.hours)
+	  Rails.cache.write("result_root_person_id_#{@current_user_id}_#{@root_person}", full_pedigree.root.id, :expires_in => 4.hours)
+	
+	else
+	  track_progress(100)
+	end
+	  
+end
 
 end
