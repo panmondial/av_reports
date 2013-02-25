@@ -1,3 +1,8 @@
 <% provide(:title, 'Help') %>
 <h1>Help</h1>
-<p>Get help on using the Arbor Vitae Reports site by emailing us.</p>
+
+<div class="row">
+  <div class="span9 offset1">
+    <p>Get help on using the Arbor Vitae Reports site by <%=mail_to "emailing us", "info@arborvitaesoftware.com", :subject => "Arbor Vitae Help" %>.</p>
+  </div>
+</div>

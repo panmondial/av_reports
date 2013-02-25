@@ -21,9 +21,9 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-            <h4><%= link_to "Reports Home", reports_path %></h4>			
+            <h4><%= link_to "Reports Home", reports_path %></h4>
 			<%= modal_html = capture do %>
-              <%= link_to('Instructions', "#myRIModal", :"data-toggle" => "modal", :class => "btn btn-warning btn-small inline") %>
+              <small>> <%= link_to('Instructions', "#myRIModal", :"data-toggle" => "modal") %></small>
             <% end %>
 			<br>
 			<br>
@@ -78,8 +78,9 @@
 			  </p>
               <br>			  
 			  <p>
-			    <b>Step 3: Select Report</b>
-			    <br>
+			    <b>Step 3: Select Report</b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+			    <small><%= link_to 'About', "#myTypesModal", :"data-toggle" => "modal", :class => "align-right" %></small>
+				<br>
 			    <div class="controls styled-select">
 			      <%= select_tag :type, options_for_select([['--  Please Select  --',nil], ['Direct Line Ancestors','direct_line_ancestors'], ['End-of-Line Ancestors','end_of_line'], ['Missing Birth Date','missing_birth_date'], ['Missing Birth Place','missing_birth_place'], ['Incomplete Birth Date','incomplete_birth_date'], ['Missing Death Date','missing_death_date'], ['Missing Death Place','missing_death_place'], ['Incomplete Death Date','incomplete_death_date']]), class: "input-xlarge" %>
 				</div>
@@ -94,6 +95,7 @@
 			<% end %>
 			
 			<%= render :partial => 'reports/modal_report_instructions' %>
+			<%= render :partial => 'reports/modal_report_types' %>
 			
           </div><!--/.well -->
         </div><!--/span-->

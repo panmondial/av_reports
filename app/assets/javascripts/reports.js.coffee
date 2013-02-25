@@ -3,16 +3,12 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $ -> $('#Clear_Data').tooltip(trigger: "hover", title: "Remove report data", placement: "right")
-
-$ -> $('#Load').tooltip(trigger: "hover", title: "Load data for report", placement: "right")
-
+#$ -> $('#Load').tooltip(trigger: "hover", title: "Load data for report", placement: "right")
 $ -> $('#Reload_Data').tooltip(trigger: "hover", title: "Reload changes made on FamilySearch", placement: "right")
-
-$ -> $('#Run_Report').tooltip(trigger: "hover", title: "Run report with selected criteria", placement: "right")
-
+#$ -> $('#Run_Report').tooltip(trigger: "hover", title: "Run report with selected criteria", placement: "right")
 $ -> $('#Reset').tooltip(trigger: "hover", title: "Select new starting person", placement: "right")
 
-$(document).ready ->
+$ ->
   path = ($(location).attr('pathname')).split("/")
   #if document.title.match(/^(?=.*?\| Reports\b)/)
   if path[1] = "reports"  
@@ -52,7 +48,7 @@ recallFields = ->
         $('#type').focus()
       else if data.percent_complete is null
         setPageValue("me", "", "", "", "")
-        $('#data_detail').prop(hidden: true)
+        $('#data_detail').hide()
         setAttrButtons(false, true, true, true, true, true, true)
         setAttrForm(false, false, false)
         stopProgressCheck("Load")
@@ -66,20 +62,28 @@ recallFields = ->
         setAttrForm(false, false, false)
         stopProgressCheck("Load")
     )
-    .fail( ->
+    .error((data, status) ->
+      stopProgressCheck("Load")
       setResultsText("", "", true)
       setAttrForm(true, true, true)
       setAttrButtons(true, true, true, true, true, true, true)
       setValuesForm("me", "", "", "")
-      stopProgressCheck("Load")
+      response = $.parseJSON(data.responseText)
+      if response is null
+        alert "There was a problem loading your report criteria. Please check your Internet connection, refresh your browser, and try again."
+      else
+        alert response.message
     )
 
 checkProgress = ->
   $.getJSON('/reports/progress')
     .done((data, status) ->
       if data.jerror
-        if data.jerror.search("[401.23]")
-          alert "Your FamilySearch session has expired. Please click 'sign out', then 'sign in' to refresh your FamilySearch session."
+        if data.jerror == "Timeout::Error"
+          alert "Your FamilySearch session has timed out. Please sign out of the Arbor Vitae site and sign in again to refresh your FamilySearch session."
+        #if data.jerror.search("[401.23]")
+        #  alert "Your FamilySearch session has timed out. Please sign out of the Arbor Vitae site and sign in again to refresh your FamilySearch session."
+        #else
         else
           alert "The following error has occurred: \n" + data.jerror + "\n Please verify your Internet connection, logout and try running the report again."
         stopProgressCheck("Load")
@@ -89,30 +93,32 @@ checkProgress = ->
         $('#data_loaded').parent().hide()
       else
         displayProgress(data.percent_complete)
-#        if data.jpedigree_built is true
-#          displayProgress(100)
-#          stopProgressCheck("Finished")
-#          setAttrForm(true, true, false)
-#          setAttrButtons(true, false, false, false, false, false, false)
-#          setResultsText(data.jresult_person_name, data.jresult_person_id, false)
-#          setValuesForm(jperson_select, jother_person_id, j_root_person, jreport_type)
-#        else
+#       if data.jpedigree_built is true
+#         displayProgress(100)
+#         stopProgressCheck("Finished")
+#         setAttrForm(true, true, false)
+#         setAttrButtons(true, false, false, false, false, false, false)
+#         setResultsText(data.jresult_person_name, data.jresult_person_id, false)
+#         setValuesForm(jperson_select, jother_person_id, j_root_person, jreport_type)
+#       else
         if data.percent_complete == 100
           $.getJSON('/reports/orig_params')
             .done((data, status) ->
-              setTimeout (->
-                stopProgressCheck("Finished")
-                $('#data_loaded').parent().hide()
-                setAttrForm(true, true, false)
-                setAttrButtons(true, false, false, false, false, false, false)
-                setResultsText(data.jresult_person_name, data.jresult_person_id, false)
-                setValuesForm(jperson_select, jother_person_id, j_root_person, jreport_type)
-                $('#type').focus()
-              ), 0
+              stopProgressCheck("Finished")
+              $('#data_loaded').parent().hide()
+              setAttrForm(true, true, false)
+              setAttrButtons(true, false, false, false, false, false, false)
+              setResultsText(data.jresult_person_name, data.jresult_person_id, false)
+              #setValuesForm(jperson_select, jother_person_id, j_root_person, jreport_type)
+              $('#type').focus()
             )
-            .fail((data, status) ->
+            .error((data, status) ->
               stopProgressCheck("Load")
-              alert "There was an error checking progress!"
+              $('#data_loaded').parent().hide()
+              setAttrForm(false, false, false)
+              setAttrButtons(false, false, false, true, false, false, false)
+              setResultsText("", "", true)
+              alert "There was a problem refreshing your report criteria page. Please refresh your browser and try again."
             )
         else # if data.percent_complete < 100 and data.percent_complete <= 0
           setAttrButtons(true, true, true, true, true, true, true)
@@ -121,13 +127,13 @@ checkProgress = ->
           displayProgress(data.percent_complete)
           #stopProgressCheck("Error")
     )
-    .error((data, status) -> 
+    .error((data, status) ->
       stopProgressCheck("Load")
-      alert "There was an error checking progress!"
-    )
-    .fail( -> 
-      stopProgressCheck("Load")
-      alert 'There was a problem checking progress!'
+      $('#data_loaded').parent().hide()
+      setAttrForm(false, false, false)
+      setAttrButtons(false, false, false, true, false, false, false)
+      setResultsText("", "", true)
+      alert "There was a problem checking the status of your data. Please refresh your page and try loading again."  
     )
 	
 displayProgress = (percent_complete) ->
@@ -213,38 +219,51 @@ setAttrButtons = (Load_disabled, Clear_Data_disabled, Clear_Data_hidden, Run_Rep
 
 $ ->
   $("#Load").click ->
-    $("#Load").mouseleave()
-    if $("input[name=person_select]:checked").val() is "me"
-      $("#root_person").val("me")
-    else if $("input[name=person_select]:checked").val() is "other"
-      if ($("#other_person_id").val().match(/^[a-zA-Z0-9]{4}[\-]{1}[a-zA-Z0-9]{3}$/))
-        $("#root_person").val($("#other_person_id").val())
-      else 
-        alert "Please enter a valid Personal Identifier for the root person of the report. (example: KQZZ-N2J)"
-        $("#other_person_id").focus()
-        return false
-    jqroot_person = $("#root_person").val()
-    $.getJSON("../reports/build_detail_ped", root_person: jqroot_person)
-      .done((data, status) ->
-        startProgressCheck(0)
-      )
-      .error((data, status) ->
-        stopProgressCheck()
-        response = $.parseJSON(data.responseText)
-        alert response.message
-      )
-  
+    if navigator.onLine
+      $("#Load").mouseleave()
+      if $("input[name=person_select]:checked").val() is "me"
+        $("#root_person").val("me")
+      else if $("input[name=person_select]:checked").val() is "other"
+        if ($("#other_person_id").val().match(/^[a-zA-Z0-9]{4}[\-]{1}[a-zA-Z0-9]{3}$/))
+          $("#root_person").val($("#other_person_id").val())
+        else 
+          alert "Please enter a valid Personal Identifier for the root person of the report. (example: KQZZ-N2J)"
+          $("#other_person_id").focus()
+          return false
+      jqroot_person = $("#root_person").val()
+      $.getJSON("/reports/build_detail_ped", root_person: jqroot_person)
+        .done((data, status) ->
+          startProgressCheck(0)
+        )
+        .error((data, status) ->
+          stopProgressCheck("Load")
+          response = $.parseJSON(data.responseText)
+          setResultsText("", "", true)
+          setAttrForm(false, false, false)
+          setAttrButtons(false, false, false, true, true, true, true)
+          if response is null
+            alert "There was a problem loading your data. Please check your Internet connection, refresh your browser, and try again."
+          else
+            alert response.message
+        )
+    else
+      alert "Your Internet connection is currently unavailable. Please re-connect your Internet and try again."
+	
+	
 $ ->
   $("#Run_Report").click ->
-    $('#Run_Report').mouseleave()
-    if $("#type").val().length==0
-      $("#type").focus()
-      alert "Please select a report type."
-      return false
+    if navigator.onLine
+      $('#Run_Report').mouseleave()
+      if $("#type").val().length==0
+        $("#type").focus()
+        alert "Please select a report type."
+        return false
+      else
+        $(this).closest('form').submit()
+        return false
     else
-      $(this).closest('form').submit()
-      return false
-	  
+      alert "Your Internet connection is currently unavailable. Please re-connect your Internet and try again."
+	
 $ ->
   $("#Reset").click ->
     setResultsText("", "", true)
@@ -255,43 +274,58 @@ $ ->
     setValueLoadButton("Load")
     $('input[id=person_select_me]').focus()
     $('#data_loaded').parent().hide()
-	
+
 $ ->
   $("#Clear_Data").click ->
-    $.getJSON("../reports/clear_cache")
-      .done( ->
-        setResultsText("", "", true)
-        setAttrForm(false, false, false)
-        $("#Clear_Data").mouseleave()
-        setAttrButtons(false, true, true, true, true, true, true)
-        setValuesForm("me", "", "", "")
-        setValueLoadButton("Load")
-        $('#data_loaded').parent().hide()
-        $('input[id=person_select_me]').focus()
-        alert "Your data has been cleared. Please select a new starting person and load data."
-      )
-      .fail((data, status) ->
-        alert 'An error has occurred with your data refresh request. Please try again.'
-      )
-
+    if navigator.onLine
+      $.getJSON("/reports/clear_cache")
+        .done( ->
+          setResultsText("", "", true)
+          setAttrForm(false, false, false)
+          $("#Clear_Data").mouseleave()
+          setAttrButtons(false, true, true, true, true, true, true)
+          setValuesForm("me", "", "", "")
+          setValueLoadButton("Load")
+          $('#data_loaded').parent().hide()
+          $('input[id=person_select_me]').focus()
+          alert "Your data has been cleared. Please select a new starting person and load data."
+        )
+        .error((data, status) ->
+          setAttrForm(true, true, false)
+          setAttrButtons(true, false, false, false, false, false, false)
+          stopProgressCheck("Finished")
+          response = $.parseJSON(data.responseText)
+          alert "There was a problem clearing your data. Please check your Internet connection, refresh your browser, and try again."
+        )
+    else
+      alert "Your Internet connection is currently unavailable. Please re-connect your Internet and try again."
+  
 $ ->
   $("#Reload_Data").click ->
-    jqroot_person = $("#root_person").val()
-    $.getJSON("../reports/reload_data", root_person: jqroot_person)
-      .done((data, status) ->
-        startProgressCheck(0)
-      )
-      .error((data, status) ->
-        stopProgressCheck("Load")
-        response = $.parseJSON(data.responseText)
-        alert response.message
-      )
+    if navigator.onLine
+      jqroot_person = $("#root_person").val()
+      $.getJSON("/reports/reload_data", root_person: jqroot_person)
+        .done((data, status) ->
+          startProgressCheck(0)
+        )
+        .error((data, status) ->
+          setAttrForm(true, true, false)
+          setAttrButtons(true, false, false, false, false, false, false)
+          stopProgressCheck("Load")
+          response = $.parseJSON(data.responseText)
+          if response is null
+            alert "There was a problem reloading your data. Please check your Internet connection, refresh your browser, and try again."
+          else
+            alert response.message
+        )
+    else
+      alert "Your Internet connection is currently unavailable. Please re-connect your Internet and try again."
 
-
+	  
 	  
 #setResultsText(person_name, person_id, hidden_state)
 #setAttrForm(person_select_disable, other_person_disable, report_type_disable)
-#setAttrButtons(Load_disabled, Clear_Data_disabled, Clear_Data_hidden, Run_Report_disabled, Reset_disabled, Reset_hidden)
+#setAttrButtons(Load_disabled, Clear_Data_disabled, Clear_Data_hidden, Run_Report_disabled, Reset_disabled, Reset_hidden, Reload_disabled)
 #setValuesForm(person_select_val, other_person_id, report_type)
 #setValueLoadButton(Load)
 #setPageValue(jperson_select, jother_person_id, j_root_person, jreport_type, jresult_person_name, jresult_person_id)

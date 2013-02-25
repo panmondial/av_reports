@@ -159,14 +159,13 @@ class ReportsController < ApplicationController
 	begin
 	  @type = params[:type]
 	  @root_person = params[:root_person]
-	  Rails.cache.write("root_person_cache_#{current_user.id}", @root_person, :expires_in => 4.hours)
-	  Rails.cache.write("report_type_cache_#{current_user.id}", @type, :expires_in => 4.hours)
-	
+	  
 	  get_person = communicator.familytree_v2.person(@root_person)
 	  
+	  Rails.cache.write("root_person_cache_#{current_user.id}", @root_person, :expires_in => 4.hours)
+	  Rails.cache.write("report_type_cache_#{current_user.id}", @type, :expires_in => 4.hours)
 	  Rails.cache.write("result_root_person_name_#{@current_user.id}_#{@root_person}", get_person.full_name, :expires_in => 4.hours)
 	  Rails.cache.write("result_root_person_id_#{@current_user.id}_#{@root_person}", get_person.id, :expires_in => 4.hours)
-
 	
       if pedigree_built?
 	    case @type
@@ -185,11 +184,48 @@ class ReportsController < ApplicationController
 	    flash[:alert] = "Your report data is loading. Please wait until loading is complete, then select a report."
         redirect_to reports_path
       end
-	rescue RubyFsStack::NotFound => error
-      flash[:error] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
-      render :index
-    rescue Exception => error
-      flash[:error] = 'Invalid report parameters. Please try again.'
+	rescue RubyFsStack::ServiceUnavailable => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "2The FamilySearch service is currently unavailable. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "2The FamilySearch service is currently unavailable. Please try again."	
+	    render :index
+	  end
+
+	rescue RubyFsStack::Unauthorized => error # works to catch error if session expired from FamilySearch
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session." }, :status => :bad_request
+	  else
+	    flash[:error] = "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session."	
+	    render :index
+	  end
+	  
+	rescue RubyFsStack::NotFound => error # works when trying to "Load" data for invalid FS ID - for bookmarked person
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
+        render :index
+	  end
+    
+	rescue Timeout::Error => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "1Your FamilySearch server request has timed out. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "1Your FamilySearch server request has timed out. Please try again."	
+	    render :index
+	  end
+	
+	rescue Exception => error
+      flash[:error] = "Exception: #{error.message} and this is ...Invalid report parameters. Please try again."
       render :index
     end
   end
@@ -197,7 +233,7 @@ class ReportsController < ApplicationController
   def build_detail_ped
 	begin
 	  r_person = params[:root_person] || @root_person
-	  Rails.cache.delete("job_errors_#{@current_user_id}_#{r_person}")
+	  Rails.cache.delete("job_errors_#{@current_user.id}_#{r_person}")
 	  communicator.familytree_v2.person(r_person)
 	  
 	  if r_person == "me"
@@ -219,24 +255,53 @@ class ReportsController < ApplicationController
 	  if request.format.json?
 	    render :json => { :message => 'Accepted' }, :status => :accepted
 	  end
-	
-	rescue RubyFsStack::NotFound => error
+	rescue RubyFsStack::ServiceUnavailable => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "2The FamilySearch service is currently unavailable. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "2The FamilySearch service is currently unavailable. Please try again."	
+	    render :index
+	  end
+
+	  rescue RubyFsStack::Unauthorized => error # works to catch error if session expired from FamilySearch
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session." }, :status => :bad_request
+	  else
+	    flash[:error] = "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session."	
+	    render :index
+	  end
+	  
+	rescue RubyFsStack::NotFound => error # works when trying to "Load" data for invalid FS ID
       if request.format.json?
 	    logger.error error.message
         logger.error error.backtrace.join("\n")
         render :json => { :message => "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again." }, :status => :bad_request
 	  else
-	    flash[:alert] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
-        redirect_to reports_path
+	    flash[:error] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
+        render :index
 	  end
+	rescue Timeout::Error => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "1Your FamilySearch server request has timed out. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "1Your FamilySearch server request has timed out. Please try again."	
+	    render :index
+	  end
+	
 	rescue Exception => error
       if request.format.json?
         logger.error error.message
         logger.error error.backtrace.join("\n")
-        render :json => { :message => 'There was a problem while trying to load your data. Please check your Internet connection and try again.' }, :status => :bad_request
+        render :json => { :message => "4Exception: #{error.message} and this is ...Invalid report parameters. Please try again." }, :status => :bad_request
       else
-        flash[:alert] = 'There was a problem while trying to load your data. Please check your Internet connection and try again.'
-        render reports_path
+        flash[:alert] = "4Exception: #{error.message} and this is ...Invalid report parameters. Please try again."
+        render :index
       end
     end
   end
@@ -278,15 +343,51 @@ class ReportsController < ApplicationController
 	  if request.format.json?
 	    render :json => { :message => 'Accepted' }, :status => :accepted
 	  end
-	  
+	
+    rescue RubyFsStack::ServiceUnavailable => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "2The FamilySearch service is currently unavailable. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "2The FamilySearch service is currently unavailable. Please try again."	
+	    render :index
+	  end
+	rescue RubyFsStack::Unauthorized => error # works to catch error if session expired from FamilySearch
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session." }, :status => :bad_request
+	  else
+	    flash[:error] = "Your FamilySearch session has timed out. Please sign out of Arbor Vitae, and sign in again to reset your FamilySearch session."	
+	    render :index
+	  end
+	rescue RubyFsStack::NotFound => error # works when trying to "Load" data for invalid FS ID
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "FamilySearch was unable to find Person ID: #{params[:root_person] || @root_person}. Please try again."
+        render :index
+	  end
+	rescue Timeout::Error => error
+      if request.format.json?
+	    logger.error error.message
+        logger.error error.backtrace.join("\n")
+        render :json => { :message => "1Your FamilySearch server request has timed out. Please try again." }, :status => :bad_request
+	  else
+	    flash[:error] = "1Your FamilySearch server request has timed out. Please try again."	
+	    render :index
+	  end
 	rescue Exception => error
       if request.format.json?
         logger.error error.message
         logger.error error.backtrace.join("\n")
-        render :json => { :message => 'There was a problem while trying to load your data. Please check your Internet connection and try again.' }, :status => :bad_request
+        render :json => { :message => "4Exception: #{error.message} and this is ...Invalid report parameters. Please try again." }, :status => :bad_request
       else
-        flash[:alert] = 'There was a problem while trying to load your data. Please check your Internet connection and try again.'
-        render reports_path
+        flash[:alert] = "4Exception: #{error.message} and this is ...Invalid report parameters. Please try again."
+        render :index
       end
     end  
 	  

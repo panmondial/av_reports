@@ -1,7 +1,10 @@
 <% provide(:title, 'Contact Us') %>
 <h1>How to Contact Us</h1>
-<p>
-	For Sales Inquiries email: email@email.com<br>
-	For General Inquiries email: info@arborvitae.com<br>
-	For Technical Issues email: techsupport@arborvitae.com
-</p>
+
+<div class="row">
+  <div class="span9 offset1">
+    <p>
+	  For General Inquiries <%= mail_to "info@arborvitaesoftware.com", "info@arborvitaesoftware.com" %><br>
+    </p>
+  </div>
+</div>

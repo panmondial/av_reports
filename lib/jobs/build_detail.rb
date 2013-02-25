@@ -14,7 +14,7 @@ class BuildDetail
   def perform
     # 1. Connect with the FamilySearch API and pull in a 4-generation pedigree for the
     # specified root person (:me is default for logged-in user)
-    my_pedigree
+	my_pedigree
     puts "1st part done!"
 
     # 2. Build basic pedigree, with no detail other than name, person identifier, gender, and parent ids
@@ -28,7 +28,7 @@ class BuildDetail
   end
 
   def error(job, exception)
-    Rails.cache.write("job_errors_#{@current_user_id}_#{@root_person}", exception, :expires_in => 15.minutes)
+	  Rails.cache.write("job_errors_#{@current_user_id}_#{@root_person}", exception, :expires_in => 15.minutes)
   end
   
   
@@ -67,7 +67,7 @@ class BuildDetail
   end
 
   def create_full_pedigree
-    full_pedigree = Org::Familysearch::Ws::Familytree::V2::Schema::Pedigree.new
+	full_pedigree = Org::Familysearch::Ws::Familytree::V2::Schema::Pedigree.new
     
 	if !Rails.cache.exist?("full_pedigree_cache_#{@current_user_id}_#{@root_person}") || @cache_refresh == true
       i = 0
@@ -98,7 +98,6 @@ class BuildDetail
 	else
 	  track_progress(100)
 	end
-	  
-end
+  end
 
 end

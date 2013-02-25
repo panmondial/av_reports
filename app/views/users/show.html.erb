@@ -3,17 +3,17 @@
   <h1>User Profile</h1>
   
   <div class="row">
-    <div class="span6 offset3">
+    <div class="span9 offset1">
 	  <div class="lead"><%= @user.first_name %> <%= @user.last_name %></div>
 	
       <table class="table">
         <tr>
-	      <td><strong>Site Login / Email:</strong></td>
-          <td><%= @user.email %></td>
+	      <td><strong>FamilySearch Username:</strong></td>
+	      <td><%= @user.username %></td>
 	    </tr>
-	    <tr>
-	      <td><strong>FamilySearch User Name:</strong></td>
-          <td><%= @user.fs_username %></td>
+		<tr>
+	      <td><strong>Email:</strong></td>
+          <td><%= @user.email %></td>
 	    </tr>
 	    <tr>
 	      <td><strong>Address Line 1:</strong></td>

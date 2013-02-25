@@ -1,6 +1,6 @@
 <div class="hero-unit center">
-  <h1>Welcome to Arbor Vitae Reports</h1>
-  <h2>This is the home page for the Arbor Vitae Reports application</p></h2>
+  <h1>Welcome to Arbor Vitae Reports!</h1>
+  <h2>Find out where to start with your family history research</p></h2>
 	
   <%= link_to "Sign up now!", instructions_path, class: "btn btn-large btn-primary" %>
 </div>
@@ -9,7 +9,7 @@
 	<div class="span4">
 		<h2>About Arbor Vitae Reports</h2>
 		<p>Learn how to research your family tree on FamilySearch with Arbor Vitae Reports.</p>
-		<p><a class="btn" href="#">About AV Reports &raquo;</a></p>
+		<p><%= link_to "About AV Reports &raquo;", about_path, class: "btn" %></p>
 	</div>
 	<div class="span4">
 		<h2>View Demos</h2>
@@ -18,9 +18,7 @@
 	</div>
 	<div class="span4">
 		<h2>Customer Testimonials</h2>
-		<p>See what other serious researchers have said about using Arbor Vitae Reports.</p>
+		<p>See what other researchers have said about using Arbor Vitae Reports.</p>
 		<p><a class="btn" href="#">Read testimonials &raquo;</a></p>
 	</div>
 </div>
-
-<%= link_to image_tag("arbor_vitae_logo_sm.jpg", alt: "Arbor Vitae"), 'http://www.arborvitaesoftware.com/' %>
