@@ -6,7 +6,10 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     #provider :familysearch, ENV['FAMILYSEARCH_DEVELOPER_KEY'], '',
   else
     provider :familysearch, ENV['FAMILYSEARCH_DEVELOPER_KEY'], '',
-      :client_options => { :site => 'https://sandbox.familysearch.org' }
+      :client_options => {
+        :site => 'https://sandbox.familysearch.org',
+        :connection_opts => { :ssl => { :verify => false } }
+      }
   end
 
 end
