@@ -159,13 +159,13 @@ class ReportsController < ApplicationController
 	begin
 	  @type = params[:type]
 	  @root_person = params[:root_person]
-	  
-	  get_person = communicator.familytree_v2.person(@root_person)
+	  # result = MultiJson.load(communicator.get('/identity/v2/session').body)
+	  # get_person = communicator.familytree_v2.person(@root_person)
 	  
 	  Rails.cache.write("root_person_cache_#{current_user.id}", @root_person, :expires_in => 4.hours)
 	  Rails.cache.write("report_type_cache_#{current_user.id}", @type, :expires_in => 4.hours)
-	  Rails.cache.write("result_root_person_name_#{@current_user.id}_#{@root_person}", get_person.full_name, :expires_in => 4.hours)
-	  Rails.cache.write("result_root_person_id_#{@current_user.id}_#{@root_person}", get_person.id, :expires_in => 4.hours)
+	  # Rails.cache.write("result_root_person_name_#{@current_user.id}_#{@root_person}", get_person.full_name, :expires_in => 4.hours)
+	  # Rails.cache.write("result_root_person_id_#{@current_user.id}_#{@root_person}", get_person.id, :expires_in => 4.hours)
 	
       if pedigree_built?
 	    case @type
@@ -180,7 +180,12 @@ class ReportsController < ApplicationController
           else end_of_line
         end
       else
-	    build_detail_ped
+	    result = MultiJson.load(communicator.get('/identity/v2/session').body)
+	    get_person = communicator.familytree_v2.person(@root_person)
+		Rails.cache.write("result_root_person_name_#{@current_user.id}_#{@root_person}", get_person.full_name, :expires_in => 4.hours)
+	    Rails.cache.write("result_root_person_id_#{@current_user.id}_#{@root_person}", get_person.id, :expires_in => 4.hours)
+				
+		build_detail_ped
 	    flash[:alert] = "Your report data is loading. Please wait until loading is complete, then select a report."
         redirect_to reports_path
       end
@@ -234,7 +239,7 @@ class ReportsController < ApplicationController
 	begin
 	  r_person = params[:root_person] || @root_person
 	  Rails.cache.delete("job_errors_#{@current_user.id}_#{r_person}")
-	  communicator.familytree_v2.person(r_person)
+	  
 	  
 	  if r_person == "me"
 		person_select = "me"
@@ -249,7 +254,9 @@ class ReportsController < ApplicationController
 	  Rails.cache.write("other_person_id_cache_#{current_user.id}", other_person_id, :expires_in => 4.hours)
 	  
 	  if !pedigree_built?
-	    Delayed::Job.enqueue(BuildDetail.new(r_person, current_user.id, session[:api_session_id], false))
+	    result = MultiJson.load(communicator.get('/identity/v2/session').body)
+		communicator.familytree_v2.person(r_person)
+		Delayed::Job.enqueue(BuildDetail.new(r_person, current_user.id, session[:api_session_id], false))
       end
 	  
 	  if request.format.json?

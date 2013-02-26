@@ -185,7 +185,7 @@ setResultsText = (person_name, person_id, hidden_state) ->
   $('#data_detail').toggle(not(hidden_state))
 	
 setValuesForm = (person_select_val, other_person_id, root_person, report_type) ->
-  $("[name=person_select]").filter("[value="+person_select_val+"]").attr("checked","checked") 
+  $("[name=person_select]").filter("[value="+person_select_val+"]").attr("checked","checked")
   $('input[name=other_person_id]').prop(value: other_person_id)
   $("#root_person").val(root_person)
   if person_select_val == "other"
